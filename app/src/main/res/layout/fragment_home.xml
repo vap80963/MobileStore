@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+    >
+
+    <RelativeLayout
+        android:id="@+id/switch_tab_ll"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:orientation="vertical"
+        android:layout_gravity="center"
+        >
+
+        <LinearLayout
+            android:id="@+id/view_pager_head"
+            android:layout_width="wrap_content"
+            android:gravity="center"
+            android:layout_height="40dp"
+            >
+
+            <LinearLayout
+                android:id="@+id/tab_friends_ll"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center|center_horizontal"
+                android:orientation="horizontal"
+                android:padding="10dip">
+
+                <TextView
+                    android:id="@+id/tab_friends_tv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="30dp"
+                    android:gravity="center"
+                    android:text="关注"
+                    android:textColor="@color/black"
+                    android:textSize="17dip" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/tab_hot_ll"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:padding="10dip"
+                android:saveEnabled="false" >
+
+                <TextView
+                    android:id="@+id/tab_hot_tv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="30dp"
+                    android:gravity="center"
+                    android:text="热门"
+                    android:textColor="@color/gray"
+                    android:textSize="17dip" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!--<Button-->
+        <!--android:id="@+id/tab_add_btn"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:background="@drawable/message"-->
+        <!--/>-->
+
+        <ImageView
+            android:id="@+id/tab_line_igv"
+            android:layout_width="40dp"
+            android:layout_height="1.5dp"
+            android:contentDescription="tab"
+            android:layout_below="@+id/view_pager_head"
+            android:layout_marginLeft="35dp"
+            android:background="@color/weboorange">
+        </ImageView>
+
+    </RelativeLayout>
+
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/home_viewpager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+    </android.support.v4.view.ViewPager>
+
+
+</LinearLayout>
