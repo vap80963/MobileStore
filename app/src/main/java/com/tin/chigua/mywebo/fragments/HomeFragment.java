@@ -13,13 +13,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tin.chigua.mywebo.R;
 import com.tin.chigua.mywebo.adapter.HomePagerAdapter;
 import com.tin.chigua.mywebo.ui.ToolbarX;
+import com.tin.chigua.mywebo.utils.LUtils;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import static android.R.attr.offset;
@@ -33,6 +36,7 @@ public class HomeFragment extends BaseFragment {
     public static ViewPager mViewPager;
     private ToolbarX mToolbarX;
 
+    private RelativeLayout mLayout;
     private TextView mFriendsTv;
     private TextView mHotTv;
     private ImageView mImgvButtom;
@@ -44,9 +48,9 @@ public class HomeFragment extends BaseFragment {
     private int mFTvW;
     private int mHTvW;
     private int mScreenW;
+    private static int firstClickTime = 0;
 
     private View view;
-
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -83,11 +87,34 @@ public class HomeFragment extends BaseFragment {
     }
 
     private void initTextView(View view) {
+        mLayout = (RelativeLayout) view.findViewById(R.id.switch_tab_ll);
         mFriendsTv = (TextView) view.findViewById(R.id.tab_friends_tv);
         mHotTv = (TextView) view.findViewById(R.id.tab_hot_tv);
 
         mFriendsTv.setOnClickListener(new MyOnClickListener(0));
         mHotTv.setOnClickListener(new MyOnClickListener(1));
+
+        mLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int currentTime = (int) Calendar.getInstance().getTimeInMillis();
+                if (firstClickTime == 0){
+                    firstClickTime = (int) Calendar.getInstance().getTimeInMillis();
+                }
+                int index = currentTime - firstClickTime;
+                LUtils.logE(getActivity(),"currentTime = " + currentTime + "firstTime = " + firstClickTime);
+                if (index <= 300 && index > 0 && firstClickTime != 0){
+                    LUtils.logE(getActivity(),"currentTime = " + currentTime + "firstTime = " + firstClickTime);
+                    LUtils.toastShort(getActivity(),"你双击了RelativeLayout");
+                    LUtils.logE(getContext(),"index = " + index);
+                    firstClickTime = 0;
+                }else if (index > 300){
+                    LUtils.logE(getContext(),"index = " + index);
+                    firstClickTime = 0;
+                }
+
+            }
+        });
     }
 
     private void initViewPager(View view) {

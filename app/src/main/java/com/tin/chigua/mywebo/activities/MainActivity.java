@@ -68,10 +68,14 @@ public class MainActivity extends BaseActivity {
                 int currentItem = HomeFragment.mViewPager.getCurrentItem();
                 switch (currentItem){
                     case 0:
+                        FriendsFragment fragment = (FriendsFragment) FriendsFragment.newInstance();
+                        fragment.moveRecylvTo();
                         FriendsFragment.mSwipeLayout.setRefreshing(true);
                         FriendsFragment.startRequestData(UrlUtil.HOME_TIMELINE, StaticUtil.REFRESH_DOWN_SIGN);
                     break;
                     case 1:
+                        HotFragment fragment1 = (HotFragment) HotFragment.newInstance();
+                        fragment1.moveRecylvTo();
                         HotFragment.mSwipeLayout.setRefreshing(true);
                         HotFragment.startRequestData(UrlUtil.PUBLIC_TIMELINE, StaticUtil.REFRESH_DOWN_SIGN);
                     break;

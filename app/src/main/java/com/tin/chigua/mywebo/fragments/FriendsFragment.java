@@ -40,11 +40,12 @@ import java.util.List;
 
 public class FriendsFragment extends BaseFragment {
 
-    private RecyclerView mRecyclerView;
+    private static RecyclerView mRecyclerView;
     public static SwipeRefreshLayout mSwipeLayout;
     private static BaseRclvAdapter mAdapter;
     private static List<StatusesBean> mList;
     private static Context mContext;
+    private LinearLayoutManager mManager;
 
     private AsyncWeiboRunner mWeiboRunner;
     private static WeiboParameters mParameters;
@@ -118,6 +119,10 @@ public class FriendsFragment extends BaseFragment {
         }
     }
 
+    public void moveRecylvTo(){
+        BaseRclvAdapter.MoveToPosition(mRecyclerView,0);
+    }
+
     private void init() {
         mList = new LinkedList<>();
         mContext = getActivity();
@@ -129,7 +134,8 @@ public class FriendsFragment extends BaseFragment {
     private void initRcylView(View view) {
 
         mRecyclerView = (RecyclerView) view.findViewById(R.id.home_common_rcylV);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(mContext,LinearLayoutManager.VERTICAL,false));
+        mManager = new LinearLayoutManager(mContext,LinearLayoutManager.VERTICAL,false);
+        mRecyclerView.setLayoutManager(mManager);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
 //        mRecyclerView.addItemDecoration(new DividerItemDecoration(mContext, DividerItemDecoration.VERTICAL));
         mAdapter = new BaseRclvAdapter(mContext,mList);

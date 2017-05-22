@@ -10,6 +10,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
+import android.view.KeyCharacterMap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,7 +24,6 @@ import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.tin.chigua.mywebo.R;
 import com.tin.chigua.mywebo.bean.PicUrlBean;
 import com.tin.chigua.mywebo.bean.StatusesBean;
-import com.tin.chigua.mywebo.utils.MyImageDecoration;
 import com.tin.chigua.mywebo.utils.RichTextUtil;
 import com.tin.chigua.mywebo.utils.TimeFormatUtils;
 
@@ -157,11 +157,28 @@ public class BaseRclvAdapter extends RecyclerView.Adapter {
                     int pos = holder.getLayoutPosition();
                     mOnItemClickLitener.onItemLongClick(holder.itemView, pos);
                     return false;
-                }
+               }
             });
         }
     }
 
+    public static void MoveToPosition(RecyclerView recyclerView,int position){
+        RecyclerView.LayoutManager layoutManager = null;
+        layoutManager = recyclerView.getLayoutManager();
+        if (layoutManager instanceof LinearLayoutManager){
+            LinearLayoutManager manager = (LinearLayoutManager) layoutManager;
+            int firstItem = manager.findFirstVisibleItemPosition();
+            int lastItem = manager.findLastVisibleItemPosition();
+            if(position < firstItem){
+                recyclerView.smoothScrollToPosition(position);
+//                recyclerView.scrollToPosition(position);
+            }else if (position == firstItem){
+                return;
+            }else {
+                throw new KeyCharacterMap.UnavailableException("The position is error,out of the range");
+            }
+        }
+    }
 
     private void loadImages(RecyclerView recyclerView, List<PicUrlBean> pics) {
 
@@ -176,7 +193,7 @@ public class BaseRclvAdapter extends RecyclerView.Adapter {
 //                return position == 0 ? 2 : 1;
 //            }
 //        });
-        recyclerView.addItemDecoration(new MyImageDecoration(space));
+//        recyclerView.addItemDecoration(new MyImageDecoration(space));
 //        recyclerView.setRecyclerListener(new RecyclerView.RecyclerListener() {
 //            @Override
 //            public void onViewRecycled(RecyclerView.ViewHolder holder) {
