@@ -6,7 +6,14 @@ package com.tin.chigua.mywebo.constant;
 
 public class StaticUtil {
 
-    public static final String DOWN_SIGN = "com.tin.chigua.mywebo.DOWN_SIGN";
+    public static final String COMMON_STRING = "com.tin.chigua.mywebo.";
+
+    public static final int FIRST_DOWN_SIGN = 100110;
+
+    public static final int REFRESH_DOWN_SIGN = 100111;
+
+    public static final int MORE_DOWN_SIGN = 100112;
+
 
 
 }

@@ -62,6 +62,7 @@ public class ShowImageAdapter extends RecyclerView.Adapter {
         Glide.with(mContext)
              .load(picUrl)
              .centerCrop()
+//             .fitCenter()
              .diskCacheStrategy(DiskCacheStrategy.RESULT)
              .error(R.drawable.add)
              .placeholder(R.color.gray)

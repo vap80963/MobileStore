@@ -8,12 +8,16 @@ import android.widget.TabHost;
 import android.widget.TextView;
 
 import com.tin.chigua.mywebo.R;
+import com.tin.chigua.mywebo.constant.StaticUtil;
+import com.tin.chigua.mywebo.fragments.FriendsFragment;
 import com.tin.chigua.mywebo.fragments.HomeFragment;
+import com.tin.chigua.mywebo.fragments.HotFragment;
 import com.tin.chigua.mywebo.fragments.MessageFragment;
 import com.tin.chigua.mywebo.fragments.MineFragment;
 import com.tin.chigua.mywebo.fragments.SquareFragment;
 import com.tin.chigua.mywebo.ui.FragmentTabhost;
 import com.tin.chigua.mywebo.ui.ToolbarX;
+import com.tin.chigua.mywebo.utils.UrlUtil;
 
 public class MainActivity extends BaseActivity {
 
@@ -61,6 +65,17 @@ public class MainActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 mTabHost.setCurrentTab(0);
+                int currentItem = HomeFragment.mViewPager.getCurrentItem();
+                switch (currentItem){
+                    case 0:
+                        FriendsFragment.mSwipeLayout.setRefreshing(true);
+                        FriendsFragment.startRequestData(UrlUtil.HOME_TIMELINE, StaticUtil.REFRESH_DOWN_SIGN);
+                    break;
+                    case 1:
+                        HotFragment.mSwipeLayout.setRefreshing(true);
+                        HotFragment.startRequestData(UrlUtil.PUBLIC_TIMELINE, StaticUtil.REFRESH_DOWN_SIGN);
+                    break;
+                }
 //                LUtils.toastShort(MainActivity.this," " + v.getId());
             }
         });

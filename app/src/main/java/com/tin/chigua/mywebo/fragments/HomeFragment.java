@@ -30,7 +30,7 @@ import static android.R.attr.offset;
 
 public class HomeFragment extends BaseFragment {
 
-    private ViewPager mViewPager;
+    public static ViewPager mViewPager;
     private ToolbarX mToolbarX;
 
     private TextView mFriendsTv;
@@ -46,6 +46,7 @@ public class HomeFragment extends BaseFragment {
     private int mScreenW;
 
     private View view;
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -178,4 +179,14 @@ public class HomeFragment extends BaseFragment {
             mViewPager.setCurrentItem(mId);
         }
     }
+
+    public static HomeFragment newInstance(){
+        HomeFragment fragment = null;
+        if(null == fragment){
+            fragment = new HomeFragment();
+        }
+        return fragment;
+
+    };
+
 }

@@ -28,7 +28,10 @@ import com.tin.chigua.mywebo.utils.RichTextUtil;
 import com.tin.chigua.mywebo.utils.TimeFormatUtils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by hasee on 5/16/2017.
@@ -36,10 +39,11 @@ import java.util.List;
 
 public class BaseRclvAdapter extends RecyclerView.Adapter {
 
-    private List<StatusesBean> mList = new ArrayList<>();
+    private List<StatusesBean> mList = new LinkedList<>();
     private Context mContext;
     private static int width;
     private static int height;
+    private volatile Map<String,String> isFisrtInit = new HashMap<>();
     private static final int space = 10;
 
     public BaseRclvAdapter(Context context, List<StatusesBean> data){
@@ -68,6 +72,7 @@ public class BaseRclvAdapter extends RecyclerView.Adapter {
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
+
         final MyViewHolder holder = (MyViewHolder) viewHolder;
         if (width == 0 || height == 0){
             LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) holder.mIcon.getLayoutParams();
@@ -158,10 +163,9 @@ public class BaseRclvAdapter extends RecyclerView.Adapter {
     }
 
 
-    private void loadImages(RecyclerView view, List<PicUrlBean> pics) {
-        RecyclerView recyclerView = new RecyclerView(mContext);
-        recyclerView = view;
-        recyclerView.removeAllViews();
+    private void loadImages(RecyclerView recyclerView, List<PicUrlBean> pics) {
+
+//        recyclerView.removeAllViews();
         final ShowImageAdapter adapter = new ShowImageAdapter(mContext,pics);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(mContext,3);
         gridLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);

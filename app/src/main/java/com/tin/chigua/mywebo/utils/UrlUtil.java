@@ -6,11 +6,13 @@ package com.tin.chigua.mywebo.utils;
 
 public class UrlUtil {
 
+    private static final String COMMON_URL = "https://api.weibo.com/2/";
+
     //公共微博
-    public static final String PUBLIC_TIMELINE = "https://api.weibo.com/2/statuses/public_timeline.json";
+    public static final String PUBLIC_TIMELINE = COMMON_URL + "statuses/public_timeline.json";
     //用户关注微博
-    public static final String HOME_TIMELINE = "https://api.weibo.com/2/statuses/home_timeline.json";
+    public static final String HOME_TIMELINE = COMMON_URL + "statuses/home_timeline.json";
     //获取表情图片
-    public static final String EMOJIS = "https://api.weibo.com/2/emotions.json";
+    public static final String EMOJIS = COMMON_URL + "emotions.json";
 
 }
