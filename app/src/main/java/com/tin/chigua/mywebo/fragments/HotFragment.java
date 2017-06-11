@@ -7,7 +7,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +27,7 @@ import com.tin.chigua.mywebo.net.BaseNetwork;
 import com.tin.chigua.mywebo.utils.LUtils;
 import com.tin.chigua.mywebo.utils.MySharePreferences;
 import com.tin.chigua.mywebo.utils.UrlUtil;
+import com.tin.chigua.mywebo.view.MyRecyclerView;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -40,8 +40,9 @@ import java.util.List;
 
 public class HotFragment extends BaseFragment {
 
-    private static RecyclerView mRecyclerView;
     public static SwipeRefreshLayout mSwipeLayout;
+
+    private static MyRecyclerView mRecyclerView;
     private static BaseRclvAdapter mAdapter;
     private static List<StatusesBean> mList;
     private static Context mContext;
@@ -56,9 +57,9 @@ public class HotFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_rcylv_common,container,false);
         init();
-        initSwipLayout(view);
         startRequestData(UrlUtil.PUBLIC_TIMELINE, StaticUtil.FIRST_DOWN_SIGN);
         initRcylView(view);
+        initSwipLayout(view);
         return view;
     }
 
@@ -99,6 +100,7 @@ public class HotFragment extends BaseFragment {
                         default:
                             break;
                     }
+                    //设置刷新滚动条停止转动
                     if (mSwipeLayout.isRefreshing()){
                         mSwipeLayout.setRefreshing(false);
                     }
@@ -120,8 +122,8 @@ public class HotFragment extends BaseFragment {
         }
     }
 
-    public void moveRecylvTo(){
-        BaseRclvAdapter.MoveToPosition(mRecyclerView,0);
+    public void moveRecylvToPosition(int position){
+        BaseRclvAdapter.MoveToPosition(mRecyclerView,position);
     }
 
     private void init() {
@@ -134,7 +136,7 @@ public class HotFragment extends BaseFragment {
 
     private void initRcylView(View view) {
 
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.home_common_rcylV);
+        mRecyclerView = (MyRecyclerView) view.findViewById(R.id.home_common_rcylV);
         mManager = new LinearLayoutManager(mContext,LinearLayoutManager.VERTICAL,false);
         mRecyclerView.setLayoutManager(mManager);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());

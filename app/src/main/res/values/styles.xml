@@ -13,5 +13,13 @@
         <item name="android:windowFullscreen">true</item>
     </style>
 
+    <style name="AlertDialog_Fullscreen">
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowNoTitle">false</item>
+    </style>
+
+    <declare-styleable name="MyRecyclerView">
+        <attr name="default_size" format="dimension"></attr>
+    </declare-styleable>
 
 </resources>

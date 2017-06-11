@@ -45,10 +45,22 @@ public class BaseRclvAdapter extends RecyclerView.Adapter {
     private static int height;
     private volatile Map<String,String> isFisrtInit = new HashMap<>();
     private static final int space = 10;
+    private LayoutInflater mInflater;
+
+    private static final int TYPE_ITEM = 001;  //recyclerview的item类型
+    private static final int TYPE_FOOTER = 002; //底部footer
+    private int load_more_status = 003;  //上拉加载的状态，有上拉刷新、正在加载
+    /*
+    上拉加载的两个状态
+     */
+    private static final int PULL_LOAD_MORE = 100;  //上拉刷新
+    private static final int LOADING_MORE= 101;  //正在加载
+
 
     public BaseRclvAdapter(Context context, List<StatusesBean> data){
         mContext = context;
         mList = data;
+        mInflater = LayoutInflater.from(mContext);
     }
 
     public interface OnItemClickLitener {
@@ -63,106 +75,135 @@ public class BaseRclvAdapter extends RecyclerView.Adapter {
     }
 
     @Override
-    public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mContext)
-                .inflate(R.layout.item_common_rcylv,parent,false);
-        return new MyViewHolder(view);
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        if(viewType == TYPE_ITEM){  //如果为TYPE_ITEM类型，则加载MyItemVIewHolder
+            View itemView = mInflater.inflate(R.layout.item_common_rcylv,parent,false);
+            return new MyItemViewHolder(itemView);
+        }else if (viewType == TYPE_FOOTER){  //如果为TYPE_FOOTER类型，则加载MyFooterViewHolder
+            View footerView = mInflater.inflate(R.layout.item_footer_rcylv,parent,false);
+            return new MyFooterViewHolder(footerView);
+        }
+        return null;
     }
 
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
-
-        final MyViewHolder holder = (MyViewHolder) viewHolder;
-        if (width == 0 || height == 0){
-            LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) holder.mIcon.getLayoutParams();
-            width = lp.width;
-            height = lp.height;
-        }
-        StatusesBean statuses = mList.get(position);
-        Uri uri = Uri.parse(statuses.user.avatar_large);
-        Glide.with(mContext)
-                .load(uri)
-                .asBitmap()
-                .placeholder(R.drawable.add)
-                .crossFade()
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .error(R.drawable.add)
+        if (viewHolder instanceof MyItemViewHolder){
+            final MyItemViewHolder holder = (MyItemViewHolder) viewHolder;
+            if (width == 0 || height == 0){
+                LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) holder.mIcon.getLayoutParams();
+                width = lp.width;
+                height = lp.height;
+            }
+            StatusesBean statuses = mList.get(position);
+            Uri uri = Uri.parse(statuses.user.avatar_large);
+            Glide.with(mContext)
+                    .load(uri)
+                    .asBitmap()
+                    .placeholder(R.drawable.add)
+                    .crossFade()
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .error(R.drawable.add)
 //                .into(holder.mIcon);
-                .into(new BitmapImageViewTarget(holder.mIcon){
+                    .into(new BitmapImageViewTarget(holder.mIcon){
+                        @Override
+                        protected void setResource(Bitmap resource) {
+                            RoundedBitmapDrawable drawable = RoundedBitmapDrawableFactory.create(mContext.getResources(),resource);
+                            drawable.setCircular(true);
+                            holder.mIcon.setImageDrawable(drawable);
+                        }
+                    });
+            holder.mContent.setText(RichTextUtil.getSpanString(mContext,statuses.text));
+            holder.mContent.setMovementMethod(LinkMovementMethod.getInstance());
+            holder.mTime.setText(TimeFormatUtils.parseToYYMMDD(statuses.created_at));
+            String source = Html.fromHtml(statuses.source).toString();
+            if(!source.equals("")){
+                holder.mSource.setText("来自" + source);
+            }
+            holder.mUserName.setText(statuses.user.name);
+            if(statuses.reposts_count > 0){
+                holder.mReportsCount.setText("" + statuses.reposts_count);
+            }
+            if (statuses.comments_count > 0){
+                holder.mCommentsCount.setText("" + statuses.comments_count);
+            }
+            if (statuses.attitudes_count > 0){
+                holder.mAttitudesCount.setText("" + statuses.attitudes_count);
+            }
+            List<PicUrlBean> contentPics = new ArrayList<>();
+            contentPics = statuses.pic_urls;
+            if(contentPics != null && contentPics.size() > 0){
+                holder.mContentRcylv.setVisibility(View.VISIBLE);
+                loadImages(holder.mContentRcylv,contentPics);
+            }else {
+                holder.mContentRcylv.setVisibility(View.GONE);
+            }
+            if(statuses.retweeted_status != null){
+                String mReditText = "@" + statuses.retweeted_status.user.screen_name + " " + statuses.retweeted_status.text;
+                holder.mReditLl.setVisibility(View.VISIBLE);
+                holder.mReditContent.setText(RichTextUtil.getSpanString(mContext,mReditText));
+                List<PicUrlBean> reditPics = new ArrayList<>();
+                reditPics = statuses.retweeted_status.pic_urls;
+                if(reditPics != null && reditPics.size() > 0){
+                    holder.mReditRcylv.setVisibility(View.VISIBLE);
+                    loadImages(holder.mReditRcylv,reditPics);
+                }else {
+                    holder.mReditRcylv.setVisibility(View.GONE);
+                }
+            }else {
+                holder.mReditLl.setVisibility(View.GONE);
+            }
+            // 如果设置了回调，则设置点击事件
+            if (mOnItemClickLitener != null) {
+                holder.itemView.setOnClickListener(new View.OnClickListener()
+                {
                     @Override
-                    protected void setResource(Bitmap resource) {
-                        RoundedBitmapDrawable drawable = RoundedBitmapDrawableFactory.create(mContext.getResources(),resource);
-                        drawable.setCircular(true);
-                        holder.mIcon.setImageDrawable(drawable);
+                    public void onClick(View v)
+                    {
+                        int pos = holder.getLayoutPosition();
+                        mOnItemClickLitener.onItemClick(holder.itemView, pos);
                     }
                 });
-        holder.mContent.setText(RichTextUtil.getSpanString(mContext,statuses.text));
-        holder.mContent.setMovementMethod(LinkMovementMethod.getInstance());
-        holder.mTime.setText(TimeFormatUtils.parseToYYMMDD(statuses.created_at));
-        String source = Html.fromHtml(statuses.source).toString();
-        if(!source.equals("")){
-            holder.mSource.setText("来自" + source);
-        }
-        holder.mUserName.setText(statuses.user.name);
-        if(statuses.reposts_count > 0){
-            holder.mReportsCount.setText("" + statuses.reposts_count);
-        }
-        if (statuses.comments_count > 0){
-            holder.mCommentsCount.setText("" + statuses.comments_count);
-        }
-        if (statuses.attitudes_count > 0){
-            holder.mAttitudesCount.setText("" + statuses.attitudes_count);
-        }
-        List<PicUrlBean> contentPics = new ArrayList<>();
-        contentPics = statuses.pic_urls;
-        if(contentPics != null && contentPics.size() > 0){
-            holder.mContentRcylv.setVisibility(View.VISIBLE);
-            loadImages(holder.mContentRcylv,contentPics);
-        }else {
-            holder.mContentRcylv.setVisibility(View.GONE);
-        }
-        if(statuses.retweeted_status != null){
-            String mReditText = "@" + statuses.retweeted_status.user.screen_name + " " + statuses.retweeted_status.text;
-            holder.mReditLl.setVisibility(View.VISIBLE);
-            holder.mReditContent.setText(RichTextUtil.getSpanString(mContext,mReditText));
-            List<PicUrlBean> reditPics = new ArrayList<>();
-            reditPics = statuses.retweeted_status.pic_urls;
-            if(reditPics != null && reditPics.size() > 0){
-                holder.mReditRcylv.setVisibility(View.VISIBLE);
-                loadImages(holder.mReditRcylv,reditPics);
-            }else {
-                holder.mReditRcylv.setVisibility(View.GONE);
-            }
-        }else {
-            holder.mReditLl.setVisibility(View.GONE);
-        }
-        // 如果设置了回调，则设置点击事件
-        if (mOnItemClickLitener != null) {
-            holder.itemView.setOnClickListener(new View.OnClickListener()
-            {
-                @Override
-                public void onClick(View v)
-                {
-                    int pos = holder.getLayoutPosition();
-                    mOnItemClickLitener.onItemClick(holder.itemView, pos);
-                }
-            });
 
-            holder.itemView.setOnLongClickListener(new View.OnLongClickListener()
-            {
-                @Override
-                public boolean onLongClick(View v)
+                holder.itemView.setOnLongClickListener(new View.OnLongClickListener()
                 {
-                    int pos = holder.getLayoutPosition();
-                    mOnItemClickLitener.onItemLongClick(holder.itemView, pos);
-                    return false;
-               }
-            });
+                    @Override
+                    public boolean onLongClick(View v)
+                    {
+                        int pos = holder.getLayoutPosition();
+                        mOnItemClickLitener.onItemLongClick(holder.itemView, pos);
+                        return false;
+                    }
+                });
+            }
+        }else if (viewHolder instanceof MyFooterViewHolder){
+            MyFooterViewHolder footerViewHolder = (MyFooterViewHolder) viewHolder;
+            switch (load_more_status){
+                case PULL_LOAD_MORE:
+                footerViewHolder.foot_view_item_tv.setText("上拉加载更多...");
+                    break;
+                case LOADING_MORE:
+                    footerViewHolder.foot_view_item_tv.setText("正在加载更多数据...");
+                    break;
+            }
         }
     }
 
-    public static void MoveToPosition(RecyclerView recyclerView,int position){
+    @Override
+    public int getItemViewType(int position) {
+        if (position + 1 == getItemCount()){
+            return TYPE_FOOTER;
+        }else {
+            return TYPE_ITEM;
+        }
+    }
+
+    public void changeMoreStatus(int status){
+        load_more_status = status;
+    }
+
+    public static void MoveToPosition(RecyclerView recyclerView, int position){
         RecyclerView.LayoutManager layoutManager = null;
         layoutManager = recyclerView.getLayoutManager();
         if (layoutManager instanceof LinearLayoutManager){
@@ -174,7 +215,7 @@ public class BaseRclvAdapter extends RecyclerView.Adapter {
 //                recyclerView.scrollToPosition(position);
             }else if (position == firstItem){
                 return;
-            }else {
+            }else if(position < 0){
                 throw new KeyCharacterMap.UnavailableException("The position is error,out of the range");
             }
         }
@@ -217,11 +258,11 @@ public class BaseRclvAdapter extends RecyclerView.Adapter {
 
     @Override
     public int getItemCount() {
-        return mList.size();
+        return mList.size() + 1;
     }
 
 
-    class MyViewHolder extends RecyclerView.ViewHolder{
+    class MyItemViewHolder extends RecyclerView.ViewHolder{
 
         private ImageView mIcon;
         private RecyclerView mContentRcylv;
@@ -237,7 +278,7 @@ public class BaseRclvAdapter extends RecyclerView.Adapter {
         private TextView mReditContent;
 
 
-        public MyViewHolder(View itemView) {
+        public MyItemViewHolder(View itemView) {
             super(itemView);
             mContent = (TextView) itemView.findViewById(R.id.item_common_rcyl_user_content);
             mUserName = (TextView) itemView.findViewById(R.id.item_common_rcyl_user_name);
@@ -254,4 +295,13 @@ public class BaseRclvAdapter extends RecyclerView.Adapter {
         }
     }
 
+    class MyFooterViewHolder extends RecyclerView.ViewHolder{
+
+        private TextView foot_view_item_tv;
+        public MyFooterViewHolder(View view) {
+            super(view);
+            foot_view_item_tv=(TextView)view.findViewById(R.id.foot_view_item_tv);
+        }
+
+    }
 }

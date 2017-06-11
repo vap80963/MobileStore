@@ -35,16 +35,16 @@ public class DrawCenterTextView extends TextView {
     @Override
     protected void onDraw(Canvas canvas) {
         Drawable drawable[] = getCompoundDrawables();
-        Drawable drawableLeft = drawable[0];
+        Drawable drawableLeft = drawable[0]; //获得drawableLeft,位于drawable[0]
         if(null != drawableLeft) {
             setGravity(Gravity.START); //设置text起始位置方向
-            int drawWidth = drawableLeft.getIntrinsicWidth();
-            int drawPadding = getCompoundDrawablePadding();
-            int textWidth = (int) getPaint().measureText(getText().toString());
-            int bodyWidth = drawWidth + drawPadding + textWidth;
-            canvas.translate((getWidth() - bodyWidth) / 2, 0);
+            int drawWidth = drawableLeft.getIntrinsicWidth();  //获得drawable图片宽度
+            int drawPadding = getCompoundDrawablePadding();  //获得Padding大小
+            int textWidth = (int) getPaint().measureText(getText().toString());  //获得文字的宽度
+            int bodyWidth = drawWidth + drawPadding + textWidth;  //获得图片和文字整体大小 = 图片宽度 + 图片padding + 文字宽度
+            canvas.translate((getWidth() - bodyWidth) / 2, 0);  //绘制图形，设置绘制的起始位置坐标，(view的宽度 - 图片文字大小) / 2
         }
-        Drawable drawableRight = drawable[1];
+        Drawable drawableRight = drawable[1];  //获得drawableRight,位于drawable[1]   其他同上
         if(null != drawableRight) {
             setGravity(Gravity.END);
             int drawWidth = drawableLeft.getIntrinsicWidth();

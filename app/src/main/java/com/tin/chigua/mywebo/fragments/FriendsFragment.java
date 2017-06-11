@@ -7,7 +7,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +27,7 @@ import com.tin.chigua.mywebo.net.BaseNetwork;
 import com.tin.chigua.mywebo.utils.LUtils;
 import com.tin.chigua.mywebo.utils.MySharePreferences;
 import com.tin.chigua.mywebo.utils.UrlUtil;
+import com.tin.chigua.mywebo.view.MyRecyclerView;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -40,8 +40,9 @@ import java.util.List;
 
 public class FriendsFragment extends BaseFragment {
 
-    private static RecyclerView mRecyclerView;
     public static SwipeRefreshLayout mSwipeLayout;
+
+    private static MyRecyclerView mRecyclerView;
     private static BaseRclvAdapter mAdapter;
     private static List<StatusesBean> mList;
     private static Context mContext;
@@ -50,14 +51,20 @@ public class FriendsFragment extends BaseFragment {
     private AsyncWeiboRunner mWeiboRunner;
     private static WeiboParameters mParameters;
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_rcylv_common,container,false);
         init();
-        initSwipLayout(view);
-        startRequestData(UrlUtil.HOME_TIMELINE, StaticUtil.FIRST_DOWN_SIGN);
+        startRequestData(UrlUtil.HOME_TIMELINE, StaticUtil.FIRST_DOWN_SIGN);  //开始请求数据
         initRcylView(view);
+        initSwipLayout(view);
         return view;
     }
 
@@ -98,6 +105,7 @@ public class FriendsFragment extends BaseFragment {
                         default:
                             break;
                     }
+                    //设置刷新滚动条停止转动
                     if (mSwipeLayout.isRefreshing()){
                         mSwipeLayout.setRefreshing(false);
                     }
@@ -111,16 +119,20 @@ public class FriendsFragment extends BaseFragment {
     }
 
     private static void updateListData(List<StatusesBean> list) {
-        int position = 0;
-        long firstId = mList.get(0).id;
-        while(firstId != list.get(position).id){
-            mList.add(position,list.get(position));
-            position++;
+        if (null != list && list.size() > 0){
+            int position = 0;
+            long firstId = mList.get(0).id;
+            while(firstId != list.get(position).id){
+                mList.add(position,list.get(position));
+                position++;
+            }
+        }else {
+            mList.addAll(list);
         }
     }
 
-    public void moveRecylvTo(){
-        BaseRclvAdapter.MoveToPosition(mRecyclerView,0);
+    public void moveRecylvToPosition(int position){
+        BaseRclvAdapter.MoveToPosition(mRecyclerView,position);
     }
 
     private void init() {
@@ -133,7 +145,7 @@ public class FriendsFragment extends BaseFragment {
 
     private void initRcylView(View view) {
 
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.home_common_rcylV);
+        mRecyclerView = (MyRecyclerView) view.findViewById(R.id.home_common_rcylV);
         mManager = new LinearLayoutManager(mContext,LinearLayoutManager.VERTICAL,false);
         mRecyclerView.setLayoutManager(mManager);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -162,7 +174,6 @@ public class FriendsFragment extends BaseFragment {
             @Override
             public void onRefresh() {
                 startRequestData(UrlUtil.HOME_TIMELINE,StaticUtil.REFRESH_DOWN_SIGN);
-
             }
         });
     }

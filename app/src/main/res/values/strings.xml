@@ -193,4 +193,5 @@
     <string name="like">赞</string>
     <string name="comment">评论</string>
     <string name="report">转发</string>
+    <string name="cancel">取消</string>
 </resources>

@@ -14,6 +14,7 @@ import com.tin.chigua.mywebo.fragments.HomeFragment;
 import com.tin.chigua.mywebo.fragments.HotFragment;
 import com.tin.chigua.mywebo.fragments.MessageFragment;
 import com.tin.chigua.mywebo.fragments.MineFragment;
+import com.tin.chigua.mywebo.fragments.NewWeboFragment;
 import com.tin.chigua.mywebo.fragments.SquareFragment;
 import com.tin.chigua.mywebo.ui.FragmentTabhost;
 import com.tin.chigua.mywebo.ui.ToolbarX;
@@ -27,12 +28,12 @@ public class MainActivity extends BaseActivity {
     private TextView mTv;
     private ToolbarX mToolbarX;
 
-    private String[] tabNames = {"首页","消息","社区","我的"};
+    private final String[] tabNames = {"首页","消息","","社区","我的"};
     private int[] tabImageSelector = new int[]{R.drawable.home_icon_selector,R.drawable.message_icon_selector,
-                            R.drawable.search_icon_selector,R.drawable.mime_icon_selector};
+                            R.drawable.ic_tabbar_new_webo,R.drawable.search_icon_selector,R.drawable.mime_icon_selector};
     private int tabTextSelector = R.drawable.home_text_selector;
     private Class mFragmentArray[] = new Class[]{HomeFragment.class, MessageFragment.class,
-                        SquareFragment.class, MineFragment.class};
+            NewWeboFragment.class,SquareFragment.class, MineFragment.class};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +47,7 @@ public class MainActivity extends BaseActivity {
 
         mTabHost = (FragmentTabhost) findViewById(R.id.fragment_tabhost);
         mTabHost.setup(MainActivity.this,getSupportFragmentManager(),R.id.fragment_layout);
+        mTabHost.getTabWidget().setDividerDrawable(null);
         for(int i = 0;i < tabNames.length;i++){
             View v = getLayoutInflater().inflate(R.layout.item_tabhost,null);
             mImagv = (ImageView) v.findViewById(R.id.tab_imgv);
@@ -53,37 +55,70 @@ public class MainActivity extends BaseActivity {
             mImagv.setImageResource(tabImageSelector[i]);
             mTv.setText(tabNames[i]);
             mTv.setTextColor(Integer.valueOf(tabTextSelector));
-            TabHost.TabSpec tabSpec = mTabHost.newTabSpec(tabNames[i]).setIndicator(v);
+            if("".equals(tabNames[i])) {
+                mTv.setVisibility(View.GONE);
+            }
+            TabHost.TabSpec tabSpec = mTabHost.newTabSpec("" + i).setIndicator(v);
             Bundle args = new Bundle();
 //            args.putSerializable("toolbarX", mToolbarX);
             args.putString("title",tabNames[i]);
-
             mTabHost.addTab(tabSpec,mFragmentArray[i],args);
 
         }
         mTabHost.getTabWidget().getChildTabViewAt(0).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mTabHost.setCurrentTab(0);
-                int currentItem = HomeFragment.mViewPager.getCurrentItem();
-                switch (currentItem){
-                    case 0:
-                        FriendsFragment fragment = (FriendsFragment) FriendsFragment.newInstance();
-                        fragment.moveRecylvTo();
-                        FriendsFragment.mSwipeLayout.setRefreshing(true);
-                        FriendsFragment.startRequestData(UrlUtil.HOME_TIMELINE, StaticUtil.REFRESH_DOWN_SIGN);
-                    break;
-                    case 1:
-                        HotFragment fragment1 = (HotFragment) HotFragment.newInstance();
-                        fragment1.moveRecylvTo();
-                        HotFragment.mSwipeLayout.setRefreshing(true);
-                        HotFragment.startRequestData(UrlUtil.PUBLIC_TIMELINE, StaticUtil.REFRESH_DOWN_SIGN);
-                    break;
+                int currentTab = mTabHost.getCurrentTab();
+                if(0 == currentTab){
+                    int currentItem = HomeFragment.mViewPager.getCurrentItem();
+                    switch (currentItem){
+                        case 0:
+                            FriendsFragment.mSwipeLayout.setRefreshing(true);
+                            FriendsFragment friendsFragment = (FriendsFragment) FriendsFragment.newInstance();
+                            friendsFragment.moveRecylvToPosition(0);
+                            friendsFragment.startRequestData(UrlUtil.HOME_TIMELINE, StaticUtil.REFRESH_DOWN_SIGN);
+                            break;
+                        case 1:
+                            HotFragment.mSwipeLayout.setRefreshing(true);
+                            HotFragment hotFragment = (HotFragment) HotFragment.newInstance();
+                            hotFragment.moveRecylvToPosition(0);
+                            hotFragment.startRequestData(UrlUtil.PUBLIC_TIMELINE, StaticUtil.REFRESH_DOWN_SIGN);
+                            break;
+                    }
+                }else {
+                    mTabHost.setCurrentTab(0);
                 }
 //                LUtils.toastShort(MainActivity.this," " + v.getId());
             }
         });
-
+        mTabHost.getTabWidget().getChildTabViewAt(2).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                NewWeboFragment dialog = (NewWeboFragment) NewWeboFragment.newInsatance();
+                dialog.show(getSupportFragmentManager(),"new_webo");
+            }
+        });
+        //监听Tab变化，设置Toolbar内容
+        mTabHost.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
+            @Override
+            public void onTabChanged(String tabId) {
+                int id = Integer.parseInt(tabId);
+                switch (id){
+                    case 0:
+                        mToolbarX.hide();
+                        break;
+                    case 1:
+                        mToolbarX.setNavigationIcon(R.string.cancel);
+                        break;
+                    case 2:
+                        break;
+                    case 3:
+                        break;
+                    case 4:
+                        break;
+                }
+            }
+        });
     }
 
     @Override
