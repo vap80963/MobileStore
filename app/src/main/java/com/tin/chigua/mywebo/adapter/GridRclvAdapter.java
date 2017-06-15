@@ -22,14 +22,14 @@ import java.util.List;
  * Created by hasee on 5/19/2017.
  */
 
-public class ShowImageAdapter extends RecyclerView.Adapter {
+public class GridRclvAdapter extends RecyclerView.Adapter {
 
     private List<PicUrlBean> mPicUrlBeen = new ArrayList<>();
     private Context mContext;
 
     private MyApplication mApplication;
 
-    public ShowImageAdapter(Context context,List<PicUrlBean> picUrlBeen){
+    public GridRclvAdapter(Context context, List<PicUrlBean> picUrlBeen){
         mContext = context;
         mPicUrlBeen.addAll(picUrlBeen);
 //        mPicUrlBeen = picUrlBeen;
@@ -61,14 +61,15 @@ public class ShowImageAdapter extends RecyclerView.Adapter {
         final PicUrlBean pic = mPicUrlBeen.get(position);
         pic.original_pic = pic.thumbnail_pic.replace("thumbnail","large");
         pic.bmiddle_pic = pic.thumbnail_pic.replace("thumbnail","bmiddle");
-        String picUrl = pic.thumbnail_pic;
+        String picUrl = pic.original_pic;
         Glide.with(mContext)
              .load(picUrl)
              .centerCrop()
+             .crossFade()
+             .placeholder(R.color.gray)
 //             .fitCenter()
              .diskCacheStrategy(DiskCacheStrategy.RESULT)
-             .error(R.drawable.add)
-             .placeholder(R.color.gray)
+             .error(R.drawable.image_error)
              .into(imageViewHolder.mImageButton);
         if(null != mOnItemClickListener){
             imageViewHolder.mImageButton.setOnClickListener(new View.OnClickListener() {

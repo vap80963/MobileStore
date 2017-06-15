@@ -28,13 +28,18 @@ public class ShowImageActivity extends BaseActivity {
         init();
         mToolbarX = getToolbarX();
         mToolbarX.hide();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         String uri = getIntent().getStringExtra("img_uri");
         Glide.with(this)
                 .load(uri)
                 .centerCrop()
                 .placeholder(R.color.gray)
                 .error(R.drawable.add)
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .diskCacheStrategy(DiskCacheStrategy.RESULT)
                 .into(mImageView);
         mImageView.setOnClickListener(new View.OnClickListener() {
             @Override

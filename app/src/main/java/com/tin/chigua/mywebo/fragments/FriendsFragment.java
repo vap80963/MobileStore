@@ -1,6 +1,7 @@
 package com.tin.chigua.mywebo.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -108,7 +109,9 @@ public class FriendsFragment extends BaseFragment {
                     mAdapter.notifyDataSetChanged();
                 } else {
                     LUtils.logE(mContext,response.message);
-                    OauthActivity.refreshToken();
+                    LUtils.toastShort(mContext,"刷新微博失败，请重试");
+                    mContext.startActivity(new Intent(mContext, OauthActivity.class));
+//                    OauthActivity.refreshToken();
                 }
             }
         }.get();

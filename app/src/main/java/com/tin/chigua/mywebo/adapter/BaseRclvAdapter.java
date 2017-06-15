@@ -55,6 +55,8 @@ public class BaseRclvAdapter extends RecyclerView.Adapter {
      */
     private static final int PULL_LOAD_MORE = 100;  //上拉刷新
     private static final int LOADING_MORE= 101;  //正在加载
+    private static final int LOAD_COMPLETE= 102;  //加载结束
+
 
 
     public BaseRclvAdapter(Context context, List<StatusesBean> data){
@@ -97,14 +99,18 @@ public class BaseRclvAdapter extends RecyclerView.Adapter {
                 height = lp.height;
             }
             StatusesBean statuses = mList.get(position);
+            /**
+             * 记载微博发布者的头像
+             */
             Uri uri = Uri.parse(statuses.user.avatar_large);
             Glide.with(mContext)
                     .load(uri)
                     .asBitmap()
-                    .placeholder(R.drawable.add)
+                    .centerCrop()
+                    .placeholder(R.color.gray)
                     .crossFade()
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .error(R.drawable.add)
+                    .error(R.drawable.image_error)
 //                .into(holder.mIcon);
                     .into(new BitmapImageViewTarget(holder.mIcon){
                         @Override
@@ -114,6 +120,9 @@ public class BaseRclvAdapter extends RecyclerView.Adapter {
                             holder.mIcon.setImageDrawable(drawable);
                         }
                     });
+            /**
+             * 加载微博内容
+             */
             holder.mContent.setText(RichTextUtil.getSpanString(mContext,statuses.text));
             holder.mContent.setMovementMethod(LinkMovementMethod.getInstance());
             holder.mTime.setText(TimeFormatUtils.parseToYYMMDD(statuses.created_at));
@@ -131,6 +140,9 @@ public class BaseRclvAdapter extends RecyclerView.Adapter {
             if (statuses.attitudes_count > 0){
                 holder.mAttitudesCount.setText("" + statuses.attitudes_count);
             }
+            /**
+             * 以下为加载照片部分
+             */
             List<PicUrlBean> contentPics = new ArrayList<>();
             contentPics = statuses.pic_urls;
             if(contentPics != null && contentPics.size() > 0){
@@ -139,6 +151,9 @@ public class BaseRclvAdapter extends RecyclerView.Adapter {
             }else {
                 holder.mContentRcylv.setVisibility(View.GONE);
             }
+            /**
+             * 以下为转发内容显示
+             */
             if(statuses.retweeted_status != null){
                 String mReditText = "@" + statuses.retweeted_status.user.screen_name + " " + statuses.retweeted_status.text;
                 holder.mReditLl.setVisibility(View.VISIBLE);
@@ -177,15 +192,18 @@ public class BaseRclvAdapter extends RecyclerView.Adapter {
                     }
                 });
             }
-        }else if (viewHolder instanceof MyFooterViewHolder){
+        }else if (viewHolder instanceof MyFooterViewHolder){ //如果为底部，则
             MyFooterViewHolder footerViewHolder = (MyFooterViewHolder) viewHolder;
             switch (load_more_status){
                 case PULL_LOAD_MORE:
+                footerViewHolder.foot_view_ll.setVisibility(View.VISIBLE);
                 footerViewHolder.foot_view_item_tv.setText("上拉加载更多...");
                     break;
                 case LOADING_MORE:
                     footerViewHolder.foot_view_item_tv.setText("正在加载更多数据...");
                     break;
+                case LOAD_COMPLETE:
+                    footerViewHolder.foot_view_ll.setVisibility(View.GONE);
             }
         }
     }
@@ -224,8 +242,13 @@ public class BaseRclvAdapter extends RecyclerView.Adapter {
     private void loadImages(RecyclerView recyclerView, List<PicUrlBean> pics) {
 
 //        recyclerView.removeAllViews();
-        final ShowImageAdapter adapter = new ShowImageAdapter(mContext,pics);
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(mContext,3);
+        GridLayoutManager gridLayoutManager = null;
+        final GridRclvAdapter adapter = new GridRclvAdapter(mContext,pics);
+        if(pics.size() == 1){
+            gridLayoutManager = new GridLayoutManager(mContext,1);
+        }else {
+            gridLayoutManager = new GridLayoutManager(mContext,3);
+        }
         gridLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(gridLayoutManager);
 //        gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
@@ -241,7 +264,7 @@ public class BaseRclvAdapter extends RecyclerView.Adapter {
 //
 //            }
 //        });
-        adapter.setOnItemClickListener(new ShowImageAdapter.OnItemClickListener() {
+        adapter.setOnItemClickListener(new GridRclvAdapter.OnItemClickListener() {
             @Override
             public void OnClickListener(View v, int position) {
                 
@@ -297,9 +320,11 @@ public class BaseRclvAdapter extends RecyclerView.Adapter {
 
     class MyFooterViewHolder extends RecyclerView.ViewHolder{
 
+        private LinearLayout foot_view_ll;
         private TextView foot_view_item_tv;
         public MyFooterViewHolder(View view) {
             super(view);
+            foot_view_ll = (LinearLayout) view.findViewById(R.id.foot_view_ll);
             foot_view_item_tv=(TextView)view.findViewById(R.id.foot_view_item_tv);
         }
 
