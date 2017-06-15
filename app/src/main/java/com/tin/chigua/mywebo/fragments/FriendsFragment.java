@@ -17,16 +17,17 @@ import com.google.gson.reflect.TypeToken;
 import com.sina.weibo.sdk.net.AsyncWeiboRunner;
 import com.sina.weibo.sdk.net.WeiboParameters;
 import com.tin.chigua.mywebo.R;
+import com.tin.chigua.mywebo.activities.OauthActivity;
 import com.tin.chigua.mywebo.adapter.BaseRclvAdapter;
 import com.tin.chigua.mywebo.bean.HttpResponse;
 import com.tin.chigua.mywebo.bean.StatusesBean;
 import com.tin.chigua.mywebo.constant.Constants;
 import com.tin.chigua.mywebo.constant.ParameterKeySet;
 import com.tin.chigua.mywebo.constant.StaticUtil;
+import com.tin.chigua.mywebo.constant.UrlUtil;
 import com.tin.chigua.mywebo.net.BaseNetwork;
 import com.tin.chigua.mywebo.utils.LUtils;
 import com.tin.chigua.mywebo.utils.MySharePreferences;
-import com.tin.chigua.mywebo.utils.UrlUtil;
 import com.tin.chigua.mywebo.view.MyRecyclerView;
 
 import java.lang.reflect.Type;
@@ -51,11 +52,6 @@ public class FriendsFragment extends BaseFragment {
     private AsyncWeiboRunner mWeiboRunner;
     private static WeiboParameters mParameters;
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-    }
 
     @Nullable
     @Override
@@ -67,7 +63,6 @@ public class FriendsFragment extends BaseFragment {
         initSwipLayout(view);
         return view;
     }
-
 
     public static void startRequestData(String url,final int loadMode) {
 
@@ -113,6 +108,7 @@ public class FriendsFragment extends BaseFragment {
                     mAdapter.notifyDataSetChanged();
                 } else {
                     LUtils.logE(mContext,response.message);
+                    OauthActivity.refreshToken();
                 }
             }
         }.get();
@@ -140,7 +136,6 @@ public class FriendsFragment extends BaseFragment {
         mContext = getActivity();
         mWeiboRunner = new AsyncWeiboRunner(mContext);
         mParameters = new WeiboParameters(Constants.APP_KEY);
-
     }
 
     private void initRcylView(View view) {

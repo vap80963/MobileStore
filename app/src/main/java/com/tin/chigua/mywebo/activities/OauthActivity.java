@@ -1,10 +1,14 @@
 package com.tin.chigua.mywebo.activities;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.widget.Button;
+import android.text.TextUtils;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.ScaleAnimation;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.sina.weibo.sdk.auth.AccessTokenKeeper;
@@ -12,7 +16,12 @@ import com.sina.weibo.sdk.auth.Oauth2AccessToken;
 import com.sina.weibo.sdk.auth.WbAuthListener;
 import com.sina.weibo.sdk.auth.WbConnectErrorMessage;
 import com.sina.weibo.sdk.auth.sso.SsoHandler;
+import com.sina.weibo.sdk.exception.WeiboException;
+import com.sina.weibo.sdk.net.RequestListener;
 import com.tin.chigua.mywebo.R;
+import com.tin.chigua.mywebo.constant.Constants;
+import com.tin.chigua.mywebo.constant.MyApplication;
+import com.tin.chigua.mywebo.ui.ToolbarX;
 import com.tin.chigua.mywebo.utils.LUtils;
 import com.tin.chigua.mywebo.utils.MySharePreferences;
 
@@ -25,30 +34,87 @@ import java.text.SimpleDateFormat;
 public class OauthActivity extends BaseActivity {
 
     private SsoHandler mSsoHandler;
-    private Oauth2AccessToken mAuthToken;
+    private static Oauth2AccessToken mAuthToken;
+    private ToolbarX mToolbarX;
+    private TextView mMidTv;
 
-    private Button mStartAuth;
+    private ImageView mStartAuth;
     private TextView mTokenTv;
 
-    private static SharedPreferences mPreferences;
+    private static MyApplication mApplication;
+    private static MySharePreferences mPreferences;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mApplication = (MyApplication) getApplication();
         initOAuth();
-        mStartAuth = (Button) findViewById(R.id.start_oauth);
-        mTokenTv = (TextView) findViewById(R.id.auth_token);
+        init();
 //        mAuthToken =  AccessTokenKeeper.readAccessToken(LoginActivity.this);
-        mAuthToken = MySharePreferences.getFromSP(OauthActivity.this);
+        mMidTv.setText("授权");
+        mAuthToken = mPreferences.getFromSP(OauthActivity.this);
         if(mAuthToken.getToken().equals("")){
-            mSsoHandler.authorize(new MyWbAuthListener());
+            beginOAuth();
         }else {
             startActivity(new Intent(this,MainActivity.class));
 //            MySharePreferences.clearToken(LoginActivity.this);
         }
     }
 
+    private void init() {
+        mStartAuth = (ImageView) findViewById(R.id.start_oauth);
+        mTokenTv = (TextView) findViewById(R.id.auth_token);
+        mMidTv = (TextView) findViewById(R.id.tool_mid_tv);
+        mStartAuth.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()){
+                    case MotionEvent.ACTION_DOWN:
+                        ScaleAnimation scaleAnimation = new ScaleAnimation(1,1.1f,1,1.1f,
+                                Animation.RELATIVE_TO_SELF,0.5f,Animation.RELATIVE_TO_SELF,0.5f);
+                        mStartAuth.setAnimation(scaleAnimation);
+                        scaleAnimation.start();
+                        break;
+                    case MotionEvent.ACTION_CANCEL:
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        break;
+                    default:
+                        break;
+                }
+                return false;
+            }
+        });
+    }
+
+
     private void beginOAuth() {
+
+        mStartAuth.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mSsoHandler.authorize(new MyWbAuthListener());
+            }
+        });
+
+    }
+
+    public static void refreshToken(){
+
+        if(!TextUtils.isEmpty(mAuthToken.getRefreshToken())){
+            AccessTokenKeeper.refreshToken(Constants.APP_KEY, mApplication.getApplicationContext(), new RequestListener() {
+                @Override
+                public void onComplete(String s) {
+                    MySharePreferences.refreshAccessToken(mApplication.getApplicationContext(),mAuthToken);
+                }
+
+                @Override
+                public void onWeiboException(WeiboException e) {
+                    LUtils.toastShort(mApplication.getApplicationContext(),"授权失败，请重试！");
+                }
+            });
+        }
+
     }
 
     private void initOAuth() {
@@ -64,11 +130,12 @@ public class OauthActivity extends BaseActivity {
                 public void run() {
                     mAuthToken = token;
                     if(mAuthToken.isSessionValid()){
-                        updateTokenView(false);
+//                        updateTokenView(false);
                         AccessTokenKeeper.writeAccessToken(OauthActivity.this,mAuthToken);
                         MySharePreferences.writeToSP(OauthActivity.this,mAuthToken);
                         startActivity(new Intent(OauthActivity.this,MainActivity.class));
-                        LUtils.toastShort(OauthActivity.this,"请求成功：" + mAuthToken + " 》》》》》》》》》》》");
+                        LUtils.toastShort(OauthActivity.this,"请求授权成功：》》》》》》》》》》》");
+                        LUtils.logE(OauthActivity.this,mAuthToken+"");
                     }
                 }
             });

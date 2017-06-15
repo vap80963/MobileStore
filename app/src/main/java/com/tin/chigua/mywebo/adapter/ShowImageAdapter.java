@@ -13,6 +13,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.tin.chigua.mywebo.R;
 import com.tin.chigua.mywebo.activities.ShowImageActivity;
 import com.tin.chigua.mywebo.bean.PicUrlBean;
+import com.tin.chigua.mywebo.constant.MyApplication;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +26,8 @@ public class ShowImageAdapter extends RecyclerView.Adapter {
 
     private List<PicUrlBean> mPicUrlBeen = new ArrayList<>();
     private Context mContext;
+
+    private MyApplication mApplication;
 
     public ShowImageAdapter(Context context,List<PicUrlBean> picUrlBeen){
         mContext = context;
@@ -74,6 +77,9 @@ public class ShowImageAdapter extends RecyclerView.Adapter {
                     Intent intent = new Intent(mContext, ShowImageActivity.class);
                     intent.putExtra("img_uri",pic.original_pic);
                     mContext.startActivity(intent);
+//                    ShowImageFragment imageFragment = ShowImageFragment.newInsatance(pic.original_pic);
+//                    HomeFragment homeFragment = HomeFragment.newInstance();
+//                    imageFragment.show(homeFragment.getChildFragmentManager(),"show_image");
                 }
             });
         }

@@ -18,14 +18,14 @@ import com.tin.chigua.mywebo.fragments.NewWeboFragment;
 import com.tin.chigua.mywebo.fragments.SquareFragment;
 import com.tin.chigua.mywebo.ui.FragmentTabhost;
 import com.tin.chigua.mywebo.ui.ToolbarX;
-import com.tin.chigua.mywebo.utils.UrlUtil;
+import com.tin.chigua.mywebo.constant.UrlUtil;
 
 public class MainActivity extends BaseActivity {
 
     private FragmentTabhost mTabHost;
     private FrameLayout mLayout;
-    private ImageView mImagv;
-    private TextView mTv;
+    private ImageView mTabImagv;
+    private TextView mTabTv, mLeftTv, mMidTv, mRightTv;
     private ToolbarX mToolbarX;
 
     private final String[] tabNames = {"首页","消息","","社区","我的"};
@@ -40,23 +40,32 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         mToolbarX = getToolbarX();
         mToolbarX.hide();
+        initView();
         initialize();
+    }
+
+    private void initView() {
+
+        mLeftTv = (TextView) findViewById(R.id.tool_left_tv);
+        mMidTv = (TextView) findViewById(R.id.tool_mid_tv);
+        mRightTv = (TextView) findViewById(R.id.tool_right_tv);
+        mTabHost = (FragmentTabhost) findViewById(R.id.fragment_tabhost);
+
     }
 
     private void initialize() {
 
-        mTabHost = (FragmentTabhost) findViewById(R.id.fragment_tabhost);
         mTabHost.setup(MainActivity.this,getSupportFragmentManager(),R.id.fragment_layout);
         mTabHost.getTabWidget().setDividerDrawable(null);
         for(int i = 0;i < tabNames.length;i++){
             View v = getLayoutInflater().inflate(R.layout.item_tabhost,null);
-            mImagv = (ImageView) v.findViewById(R.id.tab_imgv);
-            mTv = (TextView) v.findViewById(R.id.tab_tv);
-            mImagv.setImageResource(tabImageSelector[i]);
-            mTv.setText(tabNames[i]);
-            mTv.setTextColor(Integer.valueOf(tabTextSelector));
+            mTabImagv = (ImageView) v.findViewById(R.id.tab_imgv);
+            mTabTv = (TextView) v.findViewById(R.id.tab_tv);
+            mTabImagv.setImageResource(tabImageSelector[i]);
+            mTabTv.setText(tabNames[i]);
+            mTabTv.setTextColor(Integer.valueOf(tabTextSelector));
             if("".equals(tabNames[i])) {
-                mTv.setVisibility(View.GONE);
+                mTabTv.setVisibility(View.GONE);
             }
             TabHost.TabSpec tabSpec = mTabHost.newTabSpec("" + i).setIndicator(v);
             Bundle args = new Bundle();
@@ -94,7 +103,7 @@ public class MainActivity extends BaseActivity {
         mTabHost.getTabWidget().getChildTabViewAt(2).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                NewWeboFragment dialog = (NewWeboFragment) NewWeboFragment.newInsatance();
+                NewWeboFragment dialog = NewWeboFragment.newInsatance();
                 dialog.show(getSupportFragmentManager(),"new_webo");
             }
         });
@@ -108,13 +117,18 @@ public class MainActivity extends BaseActivity {
                         mToolbarX.hide();
                         break;
                     case 1:
-                        mToolbarX.setNavigationIcon(R.string.cancel);
+                        mToolbarX.show();
+                        mMidTv.setText(tabNames[id]);
                         break;
                     case 2:
+                        mToolbarX.hide();
                         break;
                     case 3:
+                        mToolbarX.hide();
                         break;
                     case 4:
+                        mToolbarX.show();
+                        mMidTv.setText(tabNames[id]);
                         break;
                 }
             }

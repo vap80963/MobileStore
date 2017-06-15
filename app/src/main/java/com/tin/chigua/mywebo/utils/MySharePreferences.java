@@ -34,7 +34,7 @@ public class MySharePreferences {
     }
 
     public static void writeToSP(Context context,Oauth2AccessToken token) {
-        if(context == null)
+        if(context == null && token.equals(""))
             return ;
         mPreferences = context.getSharedPreferences("com.tin.chigua.mywebo",MODE_PRIVATE);
         SharedPreferences.Editor editor = mPreferences.edit();
@@ -58,8 +58,17 @@ public class MySharePreferences {
         return token;
     }
 
-    public static void refreshAccessToken(Context context){
-
+    public static void refreshAccessToken(Context context,Oauth2AccessToken token){
+        if(context == null && token.equals(""))
+            return ;
+        clearToken(context);
+        mPreferences = context.getSharedPreferences("com.tin.chigua.mywebo",MODE_PRIVATE);
+        SharedPreferences.Editor editor = mPreferences.edit();
+        editor.putString("uid",token.getUid());
+        editor.putString("access_token",token.getToken());
+        editor.putString("refresh_token",token.getRefreshToken());
+        editor.putLong("expires_time",token.getExpiresTime());
+        editor.commit();
     }
 
 }

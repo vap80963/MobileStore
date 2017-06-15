@@ -13,6 +13,7 @@ import android.widget.RelativeLayout;
 
 import com.tin.chigua.mywebo.R;
 import com.tin.chigua.mywebo.ui.ToolbarX;
+import com.tin.chigua.mywebo.utils.AndroidRomUtil;
 import com.tin.chigua.mywebo.utils.ScreenTools;
 
 /**
@@ -30,7 +31,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setTheme(R.style.AppTheme);
         setContentView(R.layout.activity_base_layout);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && !AndroidRomUtil.isEMUI()) {
             //透明状态栏
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             //透明导航栏
@@ -42,7 +43,10 @@ public abstract class BaseActivity extends AppCompatActivity {
         View v = getLayoutInflater().inflate(getLayoutId(),mRlContent,false);
         mRlContent.addView(v);
     }
-
+    /*
+    如果将activity的theme设置为全屏，那么需要
+    设置activity容器与其父容器的PaddingTop，设置为通知栏的高度
+     */
     private void setImmersePaddingTop() {
         ViewGroup viewGroup = (ViewGroup) ((ViewGroup) findViewById(android.R.id.content)).getChildAt(0);
         viewGroup.setPadding(0, ScreenTools.instance(this).getStatusBarHeight(), 0, 0);

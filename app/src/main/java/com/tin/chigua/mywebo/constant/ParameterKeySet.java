@@ -17,5 +17,7 @@ public class ParameterKeySet extends WBConstants {
     public static final String TYPE = "type";
     public static final String LANGUAGE = "language";
 
+    public static final String REFRESH_ACCESS_TOKEN = "refresh_token";
+
 
 }

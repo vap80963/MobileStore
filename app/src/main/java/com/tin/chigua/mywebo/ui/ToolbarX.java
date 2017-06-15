@@ -58,6 +58,11 @@ public class ToolbarX {
         return this;
     }
 
+    public ToolbarX show(){
+        mActionBar.show();
+        return this;
+    }
+
     public ToolbarX setCustomeView(View view){
         rlCustom.removeAllViews();
         rlCustom.addView(view);

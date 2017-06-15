@@ -1,7 +1,9 @@
 package com.tin.chigua.mywebo.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -21,7 +23,7 @@ public class ShowImageActivity extends BaseActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        setTheme(R.style.AppTheme_FullScreen);
+        setTheme(R.style.TranslucentTheme);
         super.onCreate(savedInstanceState);
         init();
         mToolbarX = getToolbarX();
@@ -37,9 +39,17 @@ public class ShowImageActivity extends BaseActivity {
         mImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
+                startActivity(new Intent(ShowImageActivity.this, MainActivity.class));
             }
         });
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if(KeyEvent.KEYCODE_BACK == keyCode){
+            startActivity(new Intent(ShowImageActivity.this, MainActivity.class));
+        }
+        return super.onKeyDown(keyCode, event);
     }
 
     private void init() {
@@ -48,6 +58,6 @@ public class ShowImageActivity extends BaseActivity {
 
     @Override
     public int getLayoutId() {
-        return R.layout.activity_show_image;
+        return R.layout.fragment_show_image;
     }
 }

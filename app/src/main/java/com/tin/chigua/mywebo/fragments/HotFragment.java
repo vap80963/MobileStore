@@ -26,7 +26,7 @@ import com.tin.chigua.mywebo.constant.StaticUtil;
 import com.tin.chigua.mywebo.net.BaseNetwork;
 import com.tin.chigua.mywebo.utils.LUtils;
 import com.tin.chigua.mywebo.utils.MySharePreferences;
-import com.tin.chigua.mywebo.utils.UrlUtil;
+import com.tin.chigua.mywebo.constant.UrlUtil;
 import com.tin.chigua.mywebo.view.MyRecyclerView;
 
 import java.lang.reflect.Type;

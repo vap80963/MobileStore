@@ -7,33 +7,9 @@
               android:clipToPadding="true"
     >
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/colorPrimary"
-        android:weightSum="1"
-        >
+    <include layout="@layout/common_toolbar"></include>
 
-        <RelativeLayout
-            android:id="@+id/rlCustom"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            >
-
-            <Button
-                android:id="@+id/toolbar_add"
-                android:layout_width="35dp"
-                android:layout_height="35dp"
-                android:background="@drawable/add"
-                android:layout_margin="@dimen/size_8"
-                android:layout_alignParentRight="true"
-                />
-
-        </RelativeLayout>
-
-    </android.support.v7.widget.Toolbar>
+    <include layout="@layout/common_divider_line"></include>
 
     <RelativeLayout
         android:id="@+id/rlContent"
