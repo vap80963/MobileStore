@@ -10,7 +10,7 @@
     <ImageButton
         android:id="@+id/item_img_rcylv_img"
         android:layout_width="300dp"
-        android:layout_height="120dp"
+        android:layout_height="90dp"
         android:scaleType="fitXY"
         android:background="@color/lightgray"
         />

@@ -118,7 +118,7 @@ public class FriendsFragment extends BaseFragment {
     }
 
     private static void updateListData(List<StatusesBean> list) {
-        if (null != list && list.size() > 0){
+        if (null != list && list.size() > 0 && mList.size() > 0){
             int position = 0;
             long firstId = mList.get(0).id;
             while(firstId != list.get(position).id){

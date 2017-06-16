@@ -6,6 +6,7 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -29,6 +30,7 @@ public class ShowImageViewPagerAdPater extends PagerAdapter {
     private ProgressBar mProgressBar;
     private PhotoView mPhotoView;
     private TextView mCountTv;
+    private ImageButton mMenu;
 
     public ShowImageViewPagerAdPater(Context context,List<PicUrlBean> picUrlBeanList) {
         mContext = context;
@@ -39,6 +41,7 @@ public class ShowImageViewPagerAdPater extends PagerAdapter {
         mPhotoView = (PhotoView) view.findViewById(R.id.activity_show_image_img);
         mCountTv = (TextView) view.findViewById(R.id.show_image_img_count);
         mProgressBar = (ProgressBar) view.findViewById(R.id.show_image_progressbar);
+        mMenu = (ImageButton) view.findViewById(R.id.show_image_menu);
     }
 
     @Override
@@ -61,17 +64,14 @@ public class ShowImageViewPagerAdPater extends PagerAdapter {
         String url = mPicUrlBeanList.get(position).original_pic;
         View view = LayoutInflater.from(mContext).inflate(R.layout.activity_show_image,container,false);
         initView(view);
-        if (mPicUrlBeanList.size() <= 1){
-            mCountTv.setVisibility(View.GONE);
-        }else {
-            int currentItem = position + 1;
-            mCountTv.setText(currentItem + "/" + getCount());
-        }
+        mMenu.setVisibility(View.GONE);
+        mProgressBar.setVisibility(View.GONE);
+//        mCountTv.setVisibility(View.GONE);
         //加载图片
         Glide.with(mContext)
                 .load(url)
                 .placeholder(R.drawable.camera)
-                .centerCrop()
+                .fitCenter()
 //                .listener(new RequestListener<String, GlideDrawable>() {
 //                    @Override
 //                    public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {

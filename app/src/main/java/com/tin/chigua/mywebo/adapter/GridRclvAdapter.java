@@ -63,7 +63,8 @@ public class GridRclvAdapter extends RecyclerView.Adapter {
         final PicUrlBean pic = mPicUrlBeanList.get(position);
         pic.original_pic = pic.thumbnail_pic.replace("thumbnail","large");
         pic.bmiddle_pic = pic.thumbnail_pic.replace("thumbnail","bmiddle");
-        String picUrl = pic.original_pic;
+        String picUrl = pic.thumbnail_pic;
+        //加载图片
         Glide.with(mContext)
              .load(picUrl)
              .centerCrop()

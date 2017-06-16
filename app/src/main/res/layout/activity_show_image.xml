@@ -34,9 +34,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
-                tools:text="1/9"
+                android:text="1/9"
                 android:layout_margin="@dimen/size_8"
-
                 android:textColor="@color/white"
                 android:textSize="@dimen/text_20"
                 />
@@ -50,6 +49,7 @@
                 >
 
                 <ImageButton
+                    android:id="@+id/show_image_menu"
                     android:layout_width="50dp"
                     android:layout_height="30dp"
                     android:background="@drawable/menu_icon_selector"
