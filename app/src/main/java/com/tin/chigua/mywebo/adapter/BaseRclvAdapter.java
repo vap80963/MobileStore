@@ -146,10 +146,10 @@ public class BaseRclvAdapter extends RecyclerView.Adapter {
             List<PicUrlBean> contentPics = new ArrayList<>();
             contentPics = statuses.pic_urls;
             if(contentPics != null && contentPics.size() > 0){
-                holder.mContentRcylv.setVisibility(View.VISIBLE);
-                loadImages(holder.mContentRcylv,contentPics);
+                holder.mContentPhotosRcylv.setVisibility(View.VISIBLE);
+                loadImages(holder.mContentPhotosRcylv,contentPics);
             }else {
-                holder.mContentRcylv.setVisibility(View.GONE);
+                holder.mContentPhotosRcylv.setVisibility(View.GONE);
             }
             /**
              * 以下为转发内容显示
@@ -161,10 +161,10 @@ public class BaseRclvAdapter extends RecyclerView.Adapter {
                 List<PicUrlBean> reditPics = new ArrayList<>();
                 reditPics = statuses.retweeted_status.pic_urls;
                 if(reditPics != null && reditPics.size() > 0){
-                    holder.mReditRcylv.setVisibility(View.VISIBLE);
-                    loadImages(holder.mReditRcylv,reditPics);
+                    holder.mReditPhotosRcylv.setVisibility(View.VISIBLE);
+                    loadImages(holder.mReditPhotosRcylv,reditPics);
                 }else {
-                    holder.mReditRcylv.setVisibility(View.GONE);
+                    holder.mReditPhotosRcylv.setVisibility(View.GONE);
                 }
             }else {
                 holder.mReditLl.setVisibility(View.GONE);
@@ -239,6 +239,11 @@ public class BaseRclvAdapter extends RecyclerView.Adapter {
         }
     }
 
+    /**
+     * 用于微博内容页加载显示图片
+     * @param recyclerView
+     * @param pics
+     */
     private void loadImages(RecyclerView recyclerView, List<PicUrlBean> pics) {
 
 //        recyclerView.removeAllViews();
@@ -288,8 +293,8 @@ public class BaseRclvAdapter extends RecyclerView.Adapter {
     class MyItemViewHolder extends RecyclerView.ViewHolder{
 
         private ImageView mIcon;
-        private RecyclerView mContentRcylv;
-        private RecyclerView mReditRcylv;
+        private RecyclerView mContentPhotosRcylv;
+        private RecyclerView mReditPhotosRcylv;
         private TextView mUserName;
         private TextView mTime;
         private TextView mSource;
@@ -308,8 +313,8 @@ public class BaseRclvAdapter extends RecyclerView.Adapter {
             mTime = (TextView) itemView.findViewById(R.id.item_common_rcyl_user_time);
             mSource = (TextView) itemView.findViewById(R.id.item_common_rcyl_user_source);
             mIcon = (ImageView) itemView.findViewById(R.id.item_common_rcyl_user_icon);
-            mContentRcylv = (RecyclerView) itemView.findViewById(R.id.item_common_rcyl_user_content_rcylv);
-            mReditRcylv = (RecyclerView) itemView.findViewById(R.id.item_common_rcyl_redit_rcylv);
+            mContentPhotosRcylv = (RecyclerView) itemView.findViewById(R.id.item_common_rcyl_user_content_rcylv);
+            mReditPhotosRcylv = (RecyclerView) itemView.findViewById(R.id.item_common_rcyl_redit_rcylv);
             mReportsCount = (TextView) itemView.findViewById(R.id.item_common_rcyl_user_report_count);
             mCommentsCount = (TextView) itemView.findViewById(R.id.item_common_rcyl_user_comment_count);
             mAttitudesCount = (TextView) itemView.findViewById(R.id.item_common_rcyl_user_like_count);

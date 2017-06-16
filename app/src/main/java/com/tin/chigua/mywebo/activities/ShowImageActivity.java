@@ -1,22 +1,31 @@
 package com.tin.chigua.mywebo.activities;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.view.KeyEvent;
+import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.tin.chigua.mywebo.R;
+import com.tin.chigua.mywebo.adapter.ShowImageViewPagerAdPater;
+import com.tin.chigua.mywebo.bean.PicUrlBean;
 import com.tin.chigua.mywebo.ui.ToolbarX;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by hasee on 5/21/2017.
  */
 
 public class ShowImageActivity extends BaseActivity {
+
+    private int position;
+    private List<PicUrlBean> picUrlBeanList;
+    private ViewPager mViewPager;
+    private ShowImageViewPagerAdPater mAdPater;
+    private ProgressBar mProgressBar;
 
     private ToolbarX mToolbarX;
     private ImageView mImageView;
@@ -28,41 +37,49 @@ public class ShowImageActivity extends BaseActivity {
         init();
         mToolbarX = getToolbarX();
         mToolbarX.hide();
+        mAdPater = new ShowImageViewPagerAdPater(this,picUrlBeanList);
+        mViewPager.setAdapter(mAdPater);
+        mViewPager.setCurrentItem(position);
     }
 
+
+
     @Override
-    protected void onResume() {
-        super.onResume();
-        String uri = getIntent().getStringExtra("img_uri");
-        Glide.with(this)
-                .load(uri)
-                .centerCrop()
-                .placeholder(R.color.gray)
-                .error(R.drawable.add)
-                .diskCacheStrategy(DiskCacheStrategy.RESULT)
-                .into(mImageView);
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
+
+//    @Override
+//    public boolean onKeyDown(int keyCode, KeyEvent event) {
+//        if(KeyEvent.KEYCODE_BACK == keyCode){
+//            finish();
+//        }
+//        return super.onKeyDown(keyCode, event);
+//    }
+
+    private void init() {
+        mProgressBar = (ProgressBar) findViewById(R.id.show_image_progressbar);
+        mViewPager = (ViewPager) findViewById(R.id.show_image_viewpager);
+        mImageView = (ImageView) findViewById(R.id.activity_show_image_img);
+
+        mProgressBar.setVisibility(View.GONE);
+        mViewPager.setOffscreenPageLimit(9);
+        //获取从GridRclvAdapter传过来的图片url集合
+        position = getIntent().getIntExtra("position",0);
+        picUrlBeanList = new ArrayList<>();
+        Bundle bundle = getIntent().getBundleExtra("img_url_list");
+        picUrlBeanList = (List<PicUrlBean>) bundle.getSerializable("url_list");
+        //设置点击图片则返回上一个界面
         mImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(ShowImageActivity.this, MainActivity.class));
+                onBackPressed();
             }
         });
     }
 
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if(KeyEvent.KEYCODE_BACK == keyCode){
-            startActivity(new Intent(ShowImageActivity.this, MainActivity.class));
-        }
-        return super.onKeyDown(keyCode, event);
-    }
-
-    private void init() {
-        mImageView = (ImageView) findViewById(R.id.activity_show_image_img);
-    }
-
-    @Override
     public int getLayoutId() {
-        return R.layout.fragment_show_image;
+        return R.layout.activity_show_image;
     }
 }

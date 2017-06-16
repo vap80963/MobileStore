@@ -1,10 +1,13 @@
 package com.tin.chigua.mywebo.bean;
 
+import java.io.Serializable;
+
 /**
  * Created by hasee on 5/11/2017.
  */
 
-public class PicUrlBean {
+public class PicUrlBean implements Serializable {
+
     /**
      * thumbnail_pic : http://ww3.sinaimg.cn/thumbnail/82059686gw1evyh1wd3eqj20ku3joh1w.jpg
      */
