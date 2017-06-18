@@ -1,16 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
     >
 
     <RelativeLayout
-        android:id="@+id/switch_tab_ll"
+        android:id="@+id/switch_tab_rl"
         android:layout_width="wrap_content"
-        android:layout_height="50dp"
-        android:orientation="vertical"
-        android:layout_gravity="center"
+        android:layout_height="45dp"
+        android:layout_centerHorizontal="true"
         android:clickable="true"
         >
 
@@ -28,7 +26,7 @@
                 android:layout_weight="1"
                 android:gravity="center|center_horizontal"
                 android:orientation="horizontal"
-                android:padding="10dip">
+                android:layout_margin="8dip">
 
                 <TextView
                     android:id="@+id/tab_friends_tv"
@@ -49,7 +47,7 @@
                 android:clickable="true"
                 android:gravity="center"
                 android:orientation="horizontal"
-                android:padding="10dip"
+                android:layout_margin="8dip"
                 android:saveEnabled="false" >
 
                 <TextView
@@ -74,23 +72,35 @@
 
         <ImageView
             android:id="@+id/tab_line_igv"
-            android:layout_width="40dp"
-            android:layout_height="1.5dp"
+            android:layout_width="38dp"
+            android:layout_height="2.5dp"
             android:contentDescription="tab"
-            android:layout_below="@+id/view_pager_head"
+            android:scaleType="matrix"
             android:layout_marginLeft="35dp"
-            android:background="@color/weboorange">
+            android:background="@color/weboorange"
+            android:layout_below="@+id/view_pager_head">
         </ImageView>
 
     </RelativeLayout>
 
 
+    <View
+        android:id="@+id/common_divider_line"
+        android:layout_width="match_parent"
+        android:layout_height="0.3dp"
+        android:layout_below="@+id/switch_tab_rl"
+        android:alpha="0.1"
+        android:background="@color/lightblack"
+        >
+    </View>
+
     <android.support.v4.view.ViewPager
         android:id="@+id/home_viewpager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@+id/common_divider_line"
         >
     </android.support.v4.view.ViewPager>
 
 
-</LinearLayout>
+</RelativeLayout>

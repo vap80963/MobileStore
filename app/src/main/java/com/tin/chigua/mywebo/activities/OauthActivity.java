@@ -1,13 +1,14 @@
 package com.tin.chigua.mywebo.activities;
 
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.ScaleAnimation;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -38,6 +39,8 @@ public class OauthActivity extends BaseActivity {
     private ToolbarX mToolbarX;
     private TextView mMidTv;
 
+    private AnimatorSet animatorSet = null;
+
     private ImageView mStartAuth;
     private TextView mTokenTv;
 
@@ -57,6 +60,7 @@ public class OauthActivity extends BaseActivity {
             beginOAuth();
         }else {
             startActivity(new Intent(this,MainActivity.class));
+            finish();
 //            MySharePreferences.clearToken(LoginActivity.this);
         }
     }
@@ -65,19 +69,24 @@ public class OauthActivity extends BaseActivity {
         mStartAuth = (ImageView) findViewById(R.id.start_oauth);
         mTokenTv = (TextView) findViewById(R.id.auth_token);
         mMidTv = (TextView) findViewById(R.id.tool_mid_tv);
+        mStartAuth.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mSsoHandler.authorize(new MyWbAuthListener());
+            }
+        });
         mStartAuth.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 switch (event.getAction()){
                     case MotionEvent.ACTION_DOWN:
-                        ScaleAnimation scaleAnimation = new ScaleAnimation(1,1.1f,1,1.1f,
-                                Animation.RELATIVE_TO_SELF,0.5f,Animation.RELATIVE_TO_SELF,0.5f);
-                        mStartAuth.setAnimation(scaleAnimation);
-                        scaleAnimation.start();
+                        beginAnimatorSet(1.0f,1.1f);
                         break;
-                    case MotionEvent.ACTION_CANCEL:
+                    case MotionEvent.ACTION_MOVE:
+                        beginAnimatorSet(1.1f,1.0f);
                         break;
                     case MotionEvent.ACTION_UP:
+                        beginAnimatorSet(1.1f,1.0f);
                         break;
                     default:
                         break;
@@ -87,15 +96,33 @@ public class OauthActivity extends BaseActivity {
         });
     }
 
+    private void beginAnimatorSet(float startValue, float endValue){
+        animatorSet = new AnimatorSet();
+        final ObjectAnimator animatorX = ObjectAnimator.ofFloat(mStartAuth,"scaleX",startValue,endValue);
+        final ObjectAnimator animatorY = ObjectAnimator.ofFloat(mStartAuth,"scaleY",startValue,endValue);
+
+        animatorX.addUpdateListener(new ValueAnimator.AnimatorUpdateListener(){
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                float value = (float) animation.getAnimatedValue();
+                mStartAuth.setTranslationX(value);
+            }
+        });
+        animatorY.addUpdateListener(new ValueAnimator.AnimatorUpdateListener(){
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                float value = (float) animation.getAnimatedValue();
+                mStartAuth.setTranslationY(value);
+            }
+        });
+        animatorSet.playTogether(animatorX,animatorY);
+        animatorSet.setDuration(200)
+                .start();
+    }
 
     private void beginOAuth() {
 
-        mStartAuth.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mSsoHandler.authorize(new MyWbAuthListener());
-            }
-        });
+
 
     }
 
@@ -134,8 +161,9 @@ public class OauthActivity extends BaseActivity {
                         AccessTokenKeeper.writeAccessToken(OauthActivity.this,mAuthToken);
                         MySharePreferences.writeToSP(OauthActivity.this,mAuthToken);
                         startActivity(new Intent(OauthActivity.this,MainActivity.class));
-                        LUtils.toastShort(OauthActivity.this,"请求授权成功：》》》》》》》》》》》");
+                        LUtils.toastShort(OauthActivity.this,"授权成功,即将进入微博界面");
                         LUtils.logE(OauthActivity.this,mAuthToken+"");
+                        finish();
                     }
                 }
             });
@@ -143,7 +171,7 @@ public class OauthActivity extends BaseActivity {
 
         @Override
         public void cancel() {
-            LUtils.toastShort(OauthActivity.this,"请求取消：》》》》》》》》》》》");
+            LUtils.toastShort(OauthActivity.this,"授权请求取消");
         }
 
         @Override

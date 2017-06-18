@@ -8,7 +8,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.util.DisplayMetrics;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -87,7 +86,6 @@ public class HomeFragment extends BaseFragment {
     }
 
     private void initTextView(View view) {
-        mLayout = (RelativeLayout) view.findViewById(R.id.switch_tab_ll);
         mFriendsTv = (TextView) view.findViewById(R.id.tab_friends_tv);
         mHotTv = (TextView) view.findViewById(R.id.tab_hot_tv);
 
@@ -126,23 +124,17 @@ public class HomeFragment extends BaseFragment {
 
     private void initWidth(View view) {
         mImgvButtom = (ImageView) view.findViewById(R.id.tab_line_igv);
+        mLayout = (RelativeLayout) view.findViewById(R.id.switch_tab_rl);
+        //获取ImageView的宽度
         int imgW = mImgvButtom.getLayoutParams().width;
-//        mFriendsTv = new TextView(getActivity());
-//        mHotTv = new TextView(getActivity());
-//        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
-//                LinearLayout.LayoutParams.WRAP_CONTENT);
-//        mFriendsTv.setLayoutParams(params);
-//        mHotTv.setLayoutParams(params);
-//        mFTvW = mFriendsTv.getLeft();
-//        mHTvW = mHotTv.getLeft();
-//        LUtils.logD(getActivity(),"mFTvW = " + mFTvW);
-//        LUtils.logD(getActivity(),"mHTvW = " + mHTvW);
-        metrics = new DisplayMetrics();
-        Display display = getActivity().getWindowManager().getDefaultDisplay();
-        display.getMetrics(metrics);
-        mScreenW = metrics.widthPixels;
-//        mOffset = mFTvW - mHTvW;
-        mOffset = imgW;
+        //获取RelativeLayout的宽度
+        mLayout.measure(0,0);
+        int switchLlW = mLayout.getMeasuredWidth();
+//        mOffset = (switchLlW / 2) - imgW;
+        //获取ImageView（子控件）的margin
+        ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) mImgvButtom.getLayoutParams();
+        int leftMargin = lp.leftMargin;
+        mOffset = switchLlW - imgW - leftMargin * 2;
         Matrix matrix = new Matrix();
         matrix.postTranslate((float) offset, 0);
         mImgvButtom.setImageMatrix(matrix);
@@ -168,8 +160,8 @@ public class HomeFragment extends BaseFragment {
                     mHotTv.setTextColor(getResources().getColor(R.color.gray));
                     break;
             }
-            ObjectAnimator anim = ObjectAnimator.ofFloat(mImgvButtom,"translateX",(float)(currentIndex * (mOffset + 40)),
-                    (float)(position * (mOffset + 40)));
+            ObjectAnimator anim = ObjectAnimator.ofFloat(mImgvButtom,"translateX",(float)(currentIndex * (mOffset)),
+                    (float)(position * (mOffset)));
             anim.setDuration(200)
                 .start();
             currentIndex = position;

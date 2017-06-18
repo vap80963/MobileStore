@@ -1,10 +1,8 @@
 package com.tin.chigua.mywebo.adapter;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.net.Uri;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
+import android.os.Handler;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -19,11 +17,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.Priority;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.tin.chigua.mywebo.R;
 import com.tin.chigua.mywebo.bean.PicUrlBean;
 import com.tin.chigua.mywebo.bean.StatusesBean;
+import com.tin.chigua.mywebo.utils.CircleTransform;
 import com.tin.chigua.mywebo.utils.RichTextUtil;
 import com.tin.chigua.mywebo.utils.TimeFormatUtils;
 
@@ -90,7 +89,7 @@ public class BaseRclvAdapter extends RecyclerView.Adapter {
 
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
+    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, final int position) {
         if (viewHolder instanceof MyItemViewHolder){
             final MyItemViewHolder holder = (MyItemViewHolder) viewHolder;
             if (width == 0 || height == 0){
@@ -106,20 +105,29 @@ public class BaseRclvAdapter extends RecyclerView.Adapter {
             Glide.with(mContext)
                     .load(uri)
                     .asBitmap()
+                    .transform(new CircleTransform(mContext))
                     .centerCrop()
                     .placeholder(R.color.gray)
                     .crossFade()
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .error(R.drawable.image_error)
-//                .into(holder.mIcon);
-                    .into(new BitmapImageViewTarget(holder.mIcon){
-                        @Override
-                        protected void setResource(Bitmap resource) {
-                            RoundedBitmapDrawable drawable = RoundedBitmapDrawableFactory.create(mContext.getResources(),resource);
-                            drawable.setCircular(true);
-                            holder.mIcon.setImageDrawable(drawable);
-                        }
-                    });
+                    .priority(Priority.HIGH)
+                .into(holder.mIcon);
+            //同样可以实现加载成为圆形图片
+//                    .into(new BitmapImageViewTarget(holder.mIcon){
+//                        @Override
+//                        protected void setResource(Bitmap resource) {
+//                            RoundedBitmapDrawable drawable = RoundedBitmapDrawableFactory.create(mContext.getResources(),resource);
+//                            drawable.setCircular(true);
+//                            holder.mIcon.setImageDrawable(drawable);
+//                        }
+//
+//                        @Override
+//                        public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+//                            super.onResourceReady(resource, glideAnimation);
+////                            handlerDataChange(position);
+//                        }
+//                    });
             /**
              * 加载微博内容
              */
@@ -206,6 +214,18 @@ public class BaseRclvAdapter extends RecyclerView.Adapter {
                     footerViewHolder.foot_view_ll.setVisibility(View.GONE);
             }
         }
+    }
+
+    private void handlerDataChange(final int position) {
+        Handler handler = new Handler();
+        final Runnable r = new Runnable() {
+            @Override
+            public void run() {
+                notifyDataSetChanged();
+            }
+        };
+        handler.post(r);
+
     }
 
     @Override

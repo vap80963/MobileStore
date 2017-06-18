@@ -121,7 +121,10 @@ public class MainActivity extends BaseActivity {
                         mMidTv.setText(tabNames[id]);
                         break;
                     case 2:
-                        mToolbarX.hide();
+                        mToolbarX.show();
+                        mLeftTv.setText("取消");
+                        mMidTv.setText("新微博");
+                        mRightTv.setText("发送");
                         break;
                     case 3:
                         mToolbarX.hide();

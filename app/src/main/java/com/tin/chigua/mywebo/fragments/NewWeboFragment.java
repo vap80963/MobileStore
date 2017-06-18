@@ -2,7 +2,6 @@ package com.tin.chigua.mywebo.fragments;
 
 
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
@@ -11,7 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 
 import com.tin.chigua.mywebo.R;
-import com.tin.chigua.mywebo.utils.LUtils;
 
 /**
  * Created by hasee on 6/11/2017.
@@ -29,12 +27,13 @@ public class NewWeboFragment extends DialogFragment {
         mBuilder = new AlertDialog.Builder(getActivity(),R.style.AlertDialog_Fullscreen);
         mInflater = getActivity().getLayoutInflater();
         View view = mInflater.inflate(R.layout.fragment_new_webo,null);
-        mBuilder.setView(view).setPositiveButton("确定", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                LUtils.toastShort(getActivity(),"发表成功");
-            }
-        }).setNegativeButton("取消",null);
+//        mBuilder.setView(view).setPositiveButton("确定", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//                LUtils.toastShort(getActivity(),"发表成功");
+//            }
+//        }).setNegativeButton("取消",null);
+        mBuilder.setView(view);
         return mBuilder.create();
     }
 

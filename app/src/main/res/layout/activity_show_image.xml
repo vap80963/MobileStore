@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
     >
 
     <android.support.v4.view.ViewPager
@@ -10,8 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/black"
-        >
-    </android.support.v4.view.ViewPager>
+        ></android.support.v4.view.ViewPager>
 
     <uk.co.senab.photoview.PhotoView
         android:id="@+id/activity_show_image_img"
@@ -20,51 +18,41 @@
         android:layout_centerInParent="true"
         />
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        >
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:id="@+id/show_image_img_count"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:text="1/9"
-                android:layout_margin="@dimen/size_8"
-                android:textColor="@color/white"
-                android:textSize="@dimen/text_20"
-                />
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_margin="@dimen/size_4"
-                android:background="@color/lightblack"
-                >
-
-                <ImageButton
-                    android:id="@+id/show_image_menu"
-                    android:layout_width="50dp"
-                    android:layout_height="30dp"
-                    android:background="@drawable/menu_icon_selector"
-                    />
-
-            </LinearLayout>
-        </RelativeLayout>
-
-    </FrameLayout>
-
     <ProgressBar
         android:id="@+id/show_image_progressbar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+
+        <TextView
+            android:id="@+id/show_image_img_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="@dimen/size_8"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_20"
+            android:text="1/9"
+            />
+
+        <ImageButton
+            android:id="@+id/show_image_menu"
+            android:layout_width="50dp"
+            android:layout_height="30dp"
+            android:layout_gravity="right|center_vertical"
+            android:background="@drawable/menu_icon_selector"
+            />
+
+    </FrameLayout>
+
+
 
 </RelativeLayout>

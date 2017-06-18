@@ -64,6 +64,7 @@ public class ShowImageViewPagerAdPater extends PagerAdapter {
         String url = mPicUrlBeanList.get(position).original_pic;
         View view = LayoutInflater.from(mContext).inflate(R.layout.activity_show_image,container,false);
         initView(view);
+        mCountTv.setVisibility(View.GONE);
         mMenu.setVisibility(View.GONE);
         mProgressBar.setVisibility(View.GONE);
 //        mCountTv.setVisibility(View.GONE);

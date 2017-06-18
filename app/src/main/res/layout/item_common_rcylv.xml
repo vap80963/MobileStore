@@ -5,6 +5,7 @@
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:clickable="true"
+              android:background="@color/white"
     >
 
     <LinearLayout
@@ -14,11 +15,10 @@
         android:layout_margin="@dimen/size_12"
         >
 
-        <ImageButton
+        <com.tin.chigua.mywebo.view.CircleImageView
             android:id="@+id/item_common_rcyl_user_icon"
             android:layout_width="45dp"
             android:layout_height="45dp"
-            android:background="@color/white"
             />
 
         <LinearLayout
