@@ -1,4 +1,4 @@
-package com.tin.chigua.mywebo.service;
+package com.tin.chigua.mywebo.glide;
 
 /**
  * Created by hasee on 6/17/2017.

@@ -32,10 +32,10 @@
         <activity android:name=".activities.ShowImageActivity"/>
 
         <!-- Glide框架的配置文件 -->
-        <meta-data android:name="com.tin.chigua.mywebo.utils.GlideConfiguration"
+        <meta-data android:name="com.tin.chigua.mywebo.glide.GlideConfiguration"
                    android:value="GlideValue"
                    ></meta-data>
-        <meta-data android:name="com.tin.chigua.mywebo.utils.GlideTagModule"
+        <meta-data android:name="com.tin.chigua.mywebo.glide.GlideTagModule"
                    android:value="GlideModule"
                    ></meta-data>
 

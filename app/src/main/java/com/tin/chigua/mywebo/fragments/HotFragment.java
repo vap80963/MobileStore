@@ -7,13 +7,12 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
+import com.google.gson.JsonArray;
 import com.sina.weibo.sdk.net.AsyncWeiboRunner;
 import com.sina.weibo.sdk.net.WeiboParameters;
 import com.tin.chigua.mywebo.R;
@@ -23,15 +22,15 @@ import com.tin.chigua.mywebo.bean.StatusesBean;
 import com.tin.chigua.mywebo.constant.Constants;
 import com.tin.chigua.mywebo.constant.ParameterKeySet;
 import com.tin.chigua.mywebo.constant.StaticUtil;
+import com.tin.chigua.mywebo.constant.UrlUtil;
 import com.tin.chigua.mywebo.net.BaseNetwork;
+import com.tin.chigua.mywebo.cache.ConfigCache;
+import com.tin.chigua.mywebo.utils.GsonUtil;
 import com.tin.chigua.mywebo.utils.LUtils;
 import com.tin.chigua.mywebo.utils.MySharePreferences;
-import com.tin.chigua.mywebo.constant.UrlUtil;
 import com.tin.chigua.mywebo.view.MyRecyclerView;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -64,7 +63,7 @@ public class HotFragment extends BaseFragment {
     }
 
 
-    public static void startRequestData(String url,final int loadMode) {
+    public static void startRequestData(final String url, final int loadMode) {
 
         new BaseNetwork(mContext, url) {
             public WeiboParameters onPrepare() {
@@ -77,15 +76,12 @@ public class HotFragment extends BaseFragment {
             public void onFinish(HttpResponse response, boolean success) {
                 if (success) {
 //                    LUtils.logD(mContext,response.response.toString());
-                    List<StatusesBean> list = new ArrayList<>();
-                    final GsonBuilder gsonBuilder = new GsonBuilder();
-                    final Gson gson = gsonBuilder.create();
-                    Type type = new TypeToken<ArrayList<StatusesBean>>(){}.getType();
-                    list = gson.fromJson(response.response, type);
-//                    if(!isLoadMore){
-//                        mList.clear();
-//                    }
-//                    mList.addAll(list);
+                    //解析Json数据，并放入List集合中
+                    List<StatusesBean> list = GsonUtil.analyzeJson(response.response);
+                    //用JsonObject类把jsonArray包装
+                    GsonUtil.wrapperToJsonObject(response.response,url);
+                    //用分支判断当前的请求数据状态，决定本次的请求结果的处理方式
+
                     switch (loadMode){
                         case StaticUtil.FIRST_DOWN_SIGN:
                             mList.clear();
@@ -127,11 +123,17 @@ public class HotFragment extends BaseFragment {
     }
 
     private void init() {
-        mList = new LinkedList<>();
+        mList = new ArrayList<>();
         mContext = getActivity();
         mWeiboRunner = new AsyncWeiboRunner(mContext);
         mParameters = new WeiboParameters(Constants.APP_KEY);
-
+        String cacheString =  ConfigCache.getConfigCacheState(UrlUtil.HOME_TIMELINE);
+        if (TextUtils.isEmpty(cacheString)) {
+            startRequestData(UrlUtil.HOME_TIMELINE, StaticUtil.FIRST_DOWN_SIGN);  //开始请求数据
+        }else {
+            JsonArray jsonArray = GsonUtil.getJsonArray(cacheString);
+            mList = GsonUtil.analyzeJson(jsonArray);
+        }
     }
 
     private void initRcylView(View view) {

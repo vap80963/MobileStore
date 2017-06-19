@@ -104,15 +104,15 @@ public class BaseRclvAdapter extends RecyclerView.Adapter {
             Uri uri = Uri.parse(statuses.user.avatar_large);
             Glide.with(mContext)
                     .load(uri)
-                    .asBitmap()
+//                    .asBitmap()
                     .transform(new CircleTransform(mContext))
                     .centerCrop()
-                    .placeholder(R.color.gray)
+//                    .placeholder(R.color.gray)  //
                     .crossFade()
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .diskCacheStrategy(DiskCacheStrategy.RESULT)
                     .error(R.drawable.image_error)
                     .priority(Priority.HIGH)
-                .into(holder.mIcon);
+                    .into(holder.mIcon);
             //同样可以实现加载成为圆形图片
 //                    .into(new BitmapImageViewTarget(holder.mIcon){
 //                        @Override

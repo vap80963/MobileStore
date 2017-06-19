@@ -1,5 +1,7 @@
 package com.tin.chigua.mywebo.utils;
 
+import android.util.Log;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -24,7 +26,8 @@ public class FileUtils {
         InputStream is = null;
         try {
             is = new FileInputStream(file);
-            text = readTextInputStream(is);;
+            text = readTextInputStream(is);
+            Log.e("readTextUtil", " readTextUtil + =" + text);
         } finally {
             if(is != null) {
                 is.close();

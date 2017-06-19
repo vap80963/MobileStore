@@ -1,7 +1,9 @@
-package com.tin.chigua.mywebo.data;
+package com.tin.chigua.mywebo.cache;
 
+import android.os.Environment;
 import android.util.Log;
 
+import com.google.gson.JsonObject;
 import com.tin.chigua.mywebo.constant.MyApplication;
 import com.tin.chigua.mywebo.utils.FileUtils;
 import com.tin.chigua.mywebo.utils.NetworkUtils;
@@ -18,13 +20,18 @@ public class ConfigCache {
     private static final int CONFIG_CACHE_MOBILE_TIME_OUT = 1000 * 60 * 60 * 5; //移动网络下超过5小时更新
     private static final int CONFIG_CACHE_WIFI_TIME_OUT = 1000 * 60 * 60 * 1; //移动网络下超过1小时更新
 
-    public String getUrlCache(String url){
+    public static final String STATUS_BEAN = "statuses_bean";
+    private static final String TAG = "ConfigCache";
+
+    public static String getUrlCache(String url){
 
         if (url == null){
             return null;
         }
+
         String result = null;
-        File file = new File(MyApplication.mSdcardDataDir + "/" + getCacheDecodeString(url));
+        File file = new File(Environment.getExternalStorageDirectory() + "/" + getCacheDecodeString(url));
+        Log.e("filePath = ",file.getAbsolutePath());
         if(file.exists() && file.isFile()){
             long expiredTime = System.currentTimeMillis() - file.lastModified();
             int networkState = MyApplication.mNetWorkState;
@@ -48,25 +55,46 @@ public class ConfigCache {
         return result;
     }
 
-    public static void setUrlCache(String data, String url) {
-        File file = new File(MyApplication.mSdcardDataDir + "/" + getCacheDecodeString(url));
+    public static void setUrlCache(JsonObject data, String url) {
+        File file = new File(Environment.getExternalStorageDirectory() + "/" + getCacheDecodeString(url));
+        Log.e("filePath = ?",file.getAbsolutePath());
         try {
             //创建缓存数据到磁盘，就是创建文件
-            FileUtils.writeTextFile(file, data);
+            FileUtils.writeTextFile(file, data.toString());
+            Log.e("jsonObject = ", data.get(STATUS_BEAN).toString());
+            Log.e("jsonObject = ", data.toString() + "");
         } catch (IOException e) {
             Log.e("Config", "write " + file.getAbsolutePath() + " data failed!");
             e.printStackTrace();
         }
     }
 
+    //1. 处理特殊字符
     public static String getCacheDecodeString(String url) {
 
-        //1. 处理特殊字符
         //2. 去除后缀名带来的文件浏览器的视图凌乱(特别是图片更需要如此类似处理，否则有的手机打开图库，全是我们的缓存图片)
         if (url != null) {
             return url.replaceAll("[.:/,%?&=]", "+").replaceAll("[+]+", "+");
         }
         return null;
+    }
+
+    //返回获取缓存文件结果
+    public static String  getConfigCacheState(String url) {
+        if (url == null){
+            Log.e("error_url","url的值为空");
+            return null;
+        }
+        String cacheConfigUrl = ConfigCache.getCacheDecodeString(url);
+        String cacheString = ConfigCache.getUrlCache(cacheConfigUrl);
+        Log.e(TAG,"cacheString = " + cacheString);
+        if (null != cacheString){
+            Log.e(TAG,"我是用通过本地数据来获取数据的");
+            return cacheString;
+        }else {
+            Log.e(TAG,"我通过网络获取数据");
+            return null;
+        }
     }
 
 }

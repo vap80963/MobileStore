@@ -1,4 +1,4 @@
-package com.tin.chigua.mywebo.utils;
+package com.tin.chigua.mywebo.glide;
 
 import android.content.Context;
 import android.widget.ImageButton;
