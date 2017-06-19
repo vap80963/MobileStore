@@ -194,4 +194,5 @@
     <string name="comment">评论</string>
     <string name="report">转发</string>
     <string name="cancel">取消</string>
+    <string name="load_more">正在加载更多数据...</string>
 </resources>

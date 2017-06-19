@@ -7,24 +7,24 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.google.gson.JsonArray;
-import com.sina.weibo.sdk.net.AsyncWeiboRunner;
 import com.sina.weibo.sdk.net.WeiboParameters;
 import com.tin.chigua.mywebo.R;
 import com.tin.chigua.mywebo.adapter.BaseRclvAdapter;
 import com.tin.chigua.mywebo.bean.HttpResponse;
 import com.tin.chigua.mywebo.bean.StatusesBean;
+import com.tin.chigua.mywebo.cache.ConfigCache;
 import com.tin.chigua.mywebo.constant.Constants;
 import com.tin.chigua.mywebo.constant.ParameterKeySet;
 import com.tin.chigua.mywebo.constant.StaticUtil;
 import com.tin.chigua.mywebo.constant.UrlUtil;
 import com.tin.chigua.mywebo.net.BaseNetwork;
-import com.tin.chigua.mywebo.cache.ConfigCache;
 import com.tin.chigua.mywebo.utils.GsonUtil;
 import com.tin.chigua.mywebo.utils.LUtils;
 import com.tin.chigua.mywebo.utils.MySharePreferences;
@@ -46,17 +46,16 @@ public class HotFragment extends BaseFragment {
     private static List<StatusesBean> mList;
     private static Context mContext;
     private LinearLayoutManager mManager;
+    private static int lastVisibleItem = 0;
+    private static int count = 30;
 
-    private AsyncWeiboRunner mWeiboRunner;
     private  static WeiboParameters mParameters;
-    private int page = 1;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_rcylv_common,container,false);
         init();
-        startRequestData(UrlUtil.PUBLIC_TIMELINE, StaticUtil.FIRST_DOWN_SIGN);
         initRcylView(view);
         initSwipLayout(view);
         return view;
@@ -69,7 +68,10 @@ public class HotFragment extends BaseFragment {
             public WeiboParameters onPrepare() {
                 mParameters.put(ParameterKeySet.AUTH_ACCESS_TOKEN, MySharePreferences.getToken(mContext));
                 mParameters.put(ParameterKeySet.PAGE, 1);
-                mParameters.put(ParameterKeySet.COUNT, 20);
+                if(loadMode == StaticUtil.MORE_DOWN_SIGN){
+                    count += 10;
+                }
+                mParameters.put(ParameterKeySet.COUNT, count);
                 return mParameters;
             }
 
@@ -101,9 +103,11 @@ public class HotFragment extends BaseFragment {
                         mSwipeLayout.setRefreshing(false);
                     }
 //                    LUtils.toastShort(mContext,"list.size = " + mList.size());
+                    BaseRclvAdapter.changeMoreStatus(BaseRclvAdapter.LOAD_COMPLETE);
                     mAdapter.notifyDataSetChanged();
                 } else {
                     LUtils.logE(mContext,response.message);
+                    LUtils.toastShort(mContext,"刷新微博失败，请重试");
                 }
             }
         }.get();
@@ -125,11 +129,10 @@ public class HotFragment extends BaseFragment {
     private void init() {
         mList = new ArrayList<>();
         mContext = getActivity();
-        mWeiboRunner = new AsyncWeiboRunner(mContext);
         mParameters = new WeiboParameters(Constants.APP_KEY);
-        String cacheString =  ConfigCache.getConfigCacheState(UrlUtil.HOME_TIMELINE);
+        String cacheString =  ConfigCache.getConfigCacheState(UrlUtil.PUBLIC_TIMELINE);
         if (TextUtils.isEmpty(cacheString)) {
-            startRequestData(UrlUtil.HOME_TIMELINE, StaticUtil.FIRST_DOWN_SIGN);  //开始请求数据
+            startRequestData(UrlUtil.PUBLIC_TIMELINE, StaticUtil.FIRST_DOWN_SIGN);  //开始请求数据
         }else {
             JsonArray jsonArray = GsonUtil.getJsonArray(cacheString);
             mList = GsonUtil.analyzeJson(jsonArray);
@@ -151,6 +154,24 @@ public class HotFragment extends BaseFragment {
             }
             @Override
             public void onItemLongClick(View view, int position) {
+            }
+        });
+        mRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if (newState == RecyclerView.SCROLL_STATE_IDLE && lastVisibleItem + 1 == mAdapter.getItemCount()){
+                    BaseRclvAdapter.changeMoreStatus(BaseRclvAdapter.LOADING_MORE);
+                    LUtils.logE(getActivity(),"Hot Fragment lastVisibleItem = " + lastVisibleItem);
+                    LUtils.logE(getActivity(),"Hot Fragment mAdapter.getItemCount() = " + mAdapter.getItemCount());
+                    startRequestData(UrlUtil.PUBLIC_TIMELINE,StaticUtil.MORE_DOWN_SIGN);
+                }
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                lastVisibleItem = mManager.findLastVisibleItemPosition();
             }
         });
         mRecyclerView.setAdapter(mAdapter);

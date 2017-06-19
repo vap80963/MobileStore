@@ -83,7 +83,6 @@ public class OauthActivity extends BaseActivity {
                         beginAnimatorSet(1.0f,1.1f);
                         break;
                     case MotionEvent.ACTION_MOVE:
-                        beginAnimatorSet(1.1f,1.0f);
                         break;
                     case MotionEvent.ACTION_UP:
                         beginAnimatorSet(1.1f,1.0f);

@@ -5,62 +5,226 @@
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:clickable="true"
-              android:background="@color/white"
     >
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_margin="@dimen/size_12"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@color/white"
         >
-
-        <com.tin.chigua.mywebo.view.CircleImageView
-            android:id="@+id/item_common_rcyl_user_icon"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
-            />
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:layout_marginLeft="@dimen/size_8"
-            android:padding="@dimen/size_4"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="@dimen/size_12"
             >
 
-            <TextView
-                android:id="@+id/item_common_rcyl_user_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/user_name"
-                android:textColor="@color/weboorange"
-                android:textSize="16dp"
+            <com.tin.chigua.mywebo.view.CircleImageView
+                android:id="@+id/item_common_rcyl_user_icon"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
                 />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="horizontal"
+                android:orientation="vertical"
+                android:layout_marginLeft="@dimen/size_8"
+                android:padding="@dimen/size_4"
                 >
 
                 <TextView
-                    android:id="@+id/item_common_rcyl_user_time"
+                    android:id="@+id/item_common_rcyl_user_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="6分钟前"
-                    android:textSize="@dimen/text_10"
-                    android:textColor="@color/gray"
+                    android:text="@string/user_name"
+                    android:textColor="@color/weboorange"
+                    android:clickable="true"
+                    android:textSize="16dp"
                     />
 
-                <TextView
-                    android:id="@+id/item_common_rcyl_user_source"
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    >
+
+                    <TextView
+                        android:id="@+id/item_common_rcyl_user_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="6分钟前"
+                        android:textSize="@dimen/text_10"
+                        android:textColor="@color/gray"
+                        />
+
+                    <TextView
+                        android:id="@+id/item_common_rcyl_user_source"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="来自微博客户端webo"
+                        android:textSize="@dimen/text_10"
+                        android:layout_marginLeft="@dimen/size_8"
+                        android:textColor="@color/gray"
+                        />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingLeft="@dimen/size_12"
+            android:paddingRight="@dimen/size_12"
+            android:paddingBottom="@dimen/size_12"
+            >
+
+            <TextView
+                android:id="@+id/item_common_rcyl_user_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/size_16"
+                android:textColor="@color/black"
+                android:clickable="true"
+                android:text="我是这个用户发布的微博，你想看我发的其他微博吗？点进来吧，点进来就让你嘿嘿嘿哦"
+                />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/item_common_rcyl_user_content_rcylv"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone"
+                />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/item_common_rcyl_redit_ll"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:background="@color/lightgray"
+            android:layout_marginLeft="@dimen/size_12"
+            android:layout_marginRight="@dimen/size_12"
+            android:layout_marginBottom="@dimen/size_12"
+            android:orientation="vertical"
+            android:padding="@dimen/size_4"
+            android:visibility="gone"
+            >
+
+            <TextView
+                android:id="@+id/item_common_rcyl_redit_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="我是这个用户发布的微博，你想看我发的其他微博吗？点进来吧，点进来就让你嘿嘿嘿哦"
+                />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/item_common_rcyl_redit_rcylv"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone"
+                />
+
+        </LinearLayout>
+
+        <include layout="@layout/common_divider_line"></include>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            >
+
+            <LinearLayout
+                android:id="@+id/item_common_rcyl_user_report_ll"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_margin="@dimen/size_8"
+                android:clickable="true"
+                android:gravity="center_vertical|center_horizontal"
+                >
+
+                <com.tin.chigua.mywebo.view.DrawCenterTextView
+                    android:id="@+id/item_common_rcyl_user_report_count"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="来自微博客户端webo"
-                    android:textSize="@dimen/text_10"
-                    android:layout_marginLeft="@dimen/size_8"
+                    android:layout_marginLeft="@dimen/size_4"
+                    android:drawablePadding="@dimen/size_4"
+                    android:drawableLeft="@drawable/ic_toolbar_icon_retweet"
                     android:textColor="@color/gray"
+                    android:text="@string/report"
+                    />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="0.5dp"
+                android:layout_height="match_parent"
+                android:alpha="0.20"
+                android:layout_marginTop="@dimen/size_4"
+                android:layout_marginBottom="@dimen/size_4"
+                android:background="@drawable/view_gradient"
+                ></View>
+
+            <LinearLayout
+                android:id="@+id/item_common_rcyl_user_comment_ll"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/size_8"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:gravity="center_vertical|center_horizontal"
+                >
+
+                <com.tin.chigua.mywebo.view.DrawCenterTextView
+                    android:id="@+id/item_common_rcyl_user_comment_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableLeft="@drawable/ic_toolbar_icon_comment"
+                    android:drawablePadding="@dimen/size_4"
+                    android:textColor="@color/gray"
+                    android:layout_marginLeft="@dimen/size_4"
+                    android:text="@string/comment"
+                    />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="0.5dp"
+                android:layout_height="match_parent"
+                android:alpha="0.20"
+                android:layout_marginTop="@dimen/size_4"
+                android:layout_marginBottom="@dimen/size_4"
+                android:background="@drawable/view_gradient"
+                ></View>
+
+            <LinearLayout
+                android:id="@+id/item_common_rcyl_user_like_ll"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_margin="@dimen/size_8"
+                android:clickable="true"
+                android:gravity="center_vertical|center_horizontal"
+                >
+
+                <com.tin.chigua.mywebo.view.DrawCenterTextView
+                    android:id="@+id/item_common_rcyl_user_like_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/size_4"
+                    android:drawableLeft="@drawable/ic_icon_unlike"
+                    android:drawablePadding="@dimen/size_4"
+                    android:textColor="@color/gray"
+                    android:text="@string/like"
                     />
 
             </LinearLayout>
@@ -69,159 +233,7 @@
 
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginLeft="@dimen/size_12"
-        android:layout_marginRight="@dimen/size_12"
-        android:layout_marginBottom="@dimen/size_12"
-        >
 
-        <TextView
-            android:id="@+id/item_common_rcyl_user_content"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="@dimen/size_16"
-            android:textColor="@color/black"
-            android:text="我是这个用户发布的微博，你想看我发的其他微博吗？点进来吧，点进来就让你嘿嘿嘿哦"
-            />
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/item_common_rcyl_user_content_rcylv"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="gone"
-            />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/item_common_rcyl_redit_ll"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:clickable="true"
-        android:background="@color/lightgray"
-        android:layout_marginLeft="@dimen/size_12"
-        android:layout_marginRight="@dimen/size_12"
-        android:layout_marginBottom="@dimen/size_12"
-        android:orientation="vertical"
-        android:padding="@dimen/size_4"
-        android:visibility="gone"
-        >
-
-        <TextView
-            android:id="@+id/item_common_rcyl_redit_content"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="我是这个用户发布的微博，你想看我发的其他微博吗？点进来吧，点进来就让你嘿嘿嘿哦"
-            />
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/item_common_rcyl_redit_rcylv"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="gone"
-            />
-
-    </LinearLayout>
-
-    <include layout="@layout/common_divider_line"></include>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal"
-        >
-
-        <LinearLayout
-            android:id="@+id/item_common_rcyl_user_report_ll"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_margin="@dimen/size_8"
-            android:clickable="true"
-            android:gravity="center_vertical|center_horizontal"
-            >
-
-            <com.tin.chigua.mywebo.view.DrawCenterTextView
-                android:id="@+id/item_common_rcyl_user_report_count"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/size_4"
-                android:drawablePadding="@dimen/size_4"
-                android:drawableLeft="@drawable/ic_toolbar_icon_retweet"
-                android:textColor="@color/gray"
-                android:text="@string/report"
-                />
-
-        </LinearLayout>
-
-        <View
-            android:layout_width="0.5dp"
-            android:layout_height="match_parent"
-            android:alpha="0.15"
-            android:layout_marginTop="@dimen/size_4"
-            android:layout_marginBottom="@dimen/size_4"
-            android:background="@drawable/view_gradient"
-            ></View>
-
-        <LinearLayout
-            android:id="@+id/item_common_rcyl_user_comment_ll"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/size_8"
-            android:layout_weight="1"
-            android:clickable="true"
-            android:gravity="center_vertical|center_horizontal"
-            >
-
-            <com.tin.chigua.mywebo.view.DrawCenterTextView
-                android:id="@+id/item_common_rcyl_user_comment_count"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:drawableLeft="@drawable/ic_toolbar_icon_comment"
-                android:drawablePadding="@dimen/size_4"
-                android:textColor="@color/gray"
-                android:layout_marginLeft="@dimen/size_4"
-                android:text="@string/comment"
-                />
-
-        </LinearLayout>
-
-        <View
-            android:layout_width="0.5dp"
-            android:layout_height="match_parent"
-            android:alpha="0.15"
-            android:layout_marginTop="@dimen/size_4"
-            android:layout_marginBottom="@dimen/size_4"
-            android:background="@drawable/view_gradient"
-            ></View>
-
-        <LinearLayout
-            android:id="@+id/item_common_rcyl_user_like_ll"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_margin="@dimen/size_8"
-            android:clickable="true"
-            android:gravity="center_vertical|center_horizontal"
-            >
-
-            <com.tin.chigua.mywebo.view.DrawCenterTextView
-                android:id="@+id/item_common_rcyl_user_like_count"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/size_4"
-                android:drawableLeft="@drawable/ic_icon_unlike"
-                android:drawablePadding="@dimen/size_4"
-                android:textColor="@color/gray"
-                android:text="@string/like"
-                />
-
-        </LinearLayout>
-
-    </LinearLayout>
 
     <include layout="@layout/common_divider_line"></include>
 

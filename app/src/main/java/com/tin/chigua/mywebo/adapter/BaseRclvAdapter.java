@@ -8,6 +8,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
+import android.util.TypedValue;
 import android.view.KeyCharacterMap;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,9 +20,12 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.Priority;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.sina.weibo.sdk.auth.AuthInfo;
+import com.sina.weibo.sdk.web.WeiboPageUtils;
 import com.tin.chigua.mywebo.R;
 import com.tin.chigua.mywebo.bean.PicUrlBean;
 import com.tin.chigua.mywebo.bean.StatusesBean;
+import com.tin.chigua.mywebo.constant.Constants;
 import com.tin.chigua.mywebo.utils.CircleTransform;
 import com.tin.chigua.mywebo.utils.RichTextUtil;
 import com.tin.chigua.mywebo.utils.TimeFormatUtils;
@@ -48,15 +52,20 @@ public class BaseRclvAdapter extends RecyclerView.Adapter {
 
     private static final int TYPE_ITEM = 001;  //recyclerview的item类型
     private static final int TYPE_FOOTER = 002; //底部footer
-    private int load_more_status = 003;  //上拉加载的状态，有上拉刷新、正在加载
+    private static int load_more_status = 003;  //上拉加载的状态，有上拉刷新、正在加载
     /*
     上拉加载的两个状态
      */
-    private static final int PULL_LOAD_MORE = 100;  //上拉刷新
-    private static final int LOADING_MORE= 101;  //正在加载
-    private static final int LOAD_COMPLETE= 102;  //加载结束
+    public static final int PULL_LOAD_MORE = 100;  //上拉刷新
+    public static final int LOADING_MORE= 101;  //正在加载
+    public static final int LOAD_COMPLETE= 102;  //加载结束
 
-
+    private String uid;
+    private String mblogid;
+    private String retweenUid;
+    private String mRetweenBlogid;
+    private boolean useWeb = true;
+    private AuthInfo authInfo;
 
     public BaseRclvAdapter(Context context, List<StatusesBean> data){
         mContext = context;
@@ -79,6 +88,10 @@ public class BaseRclvAdapter extends RecyclerView.Adapter {
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if(viewType == TYPE_ITEM){  //如果为TYPE_ITEM类型，则加载MyItemVIewHolder
             View itemView = mInflater.inflate(R.layout.item_common_rcylv,parent,false);
+            //设置点击事件的动画
+            TypedValue typedValue = new TypedValue();
+            mContext.getTheme().resolveAttribute(R.attr.selectableItemBackgroundBorderless, typedValue, true);
+//            itemView.setBackgroundResource(typedValue.resourceId);
             return new MyItemViewHolder(itemView);
         }else if (viewType == TYPE_FOOTER){  //如果为TYPE_FOOTER类型，则加载MyFooterViewHolder
             View footerView = mInflater.inflate(R.layout.item_footer_rcylv,parent,false);
@@ -90,6 +103,9 @@ public class BaseRclvAdapter extends RecyclerView.Adapter {
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, final int position) {
+        if (mList == null){
+            return;
+        }
         if (viewHolder instanceof MyItemViewHolder){
             final MyItemViewHolder holder = (MyItemViewHolder) viewHolder;
             if (width == 0 || height == 0){
@@ -99,9 +115,9 @@ public class BaseRclvAdapter extends RecyclerView.Adapter {
             }
             StatusesBean statuses = mList.get(position);
             /**
-             * 记载微博发布者的头像
+             * 加载微博发布者的头像
              */
-            Uri uri = Uri.parse(statuses.user.avatar_large);
+            final Uri uri = Uri.parse(statuses.user.avatar_large);
             Glide.with(mContext)
                     .load(uri)
 //                    .asBitmap()
@@ -128,6 +144,42 @@ public class BaseRclvAdapter extends RecyclerView.Adapter {
 ////                            handlerDataChange(position);
 //                        }
 //                    });
+            authInfo = new AuthInfo(mContext, Constants.APP_KEY, Constants.REDIRECT_URL, Constants.SCOPE);
+/*            holder.mItemRclvLl.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    WeiboPageUtils.getInstance(mContext,authInfo).startWeiboDetailPage(mblogid,uid,useWeb);
+                }
+            });*/
+            holder.mContent.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    StatusesBean statusesBean = mList.get(holder.getLayoutPosition());
+                    uid = statusesBean.idstr;
+                    mblogid = statusesBean.mid;
+//                    WeiboPageUtils.getInstance(mContext,authInfo).startUserMainPage(uid,useWeb);
+                    WeiboPageUtils.getInstance(mContext,authInfo).startWeiboDetailPage(mblogid,uid,useWeb);
+                }
+            });
+            holder.mUserName.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    StatusesBean statusesBean = mList.get(holder.getLayoutPosition());
+                    uid = statusesBean.idstr;
+                    mblogid = statusesBean.mid;
+//                    WeiboPageUtils.getInstance(mContext,authInfo).startUserMainPage(uid,useWeb);
+                    WeiboPageUtils.getInstance(mContext,authInfo).gotoMyProfile(useWeb);
+                }
+            });
+            holder.mIcon.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    StatusesBean statusesBean = mList.get(holder.getLayoutPosition());
+                    uid = statusesBean.idstr;
+                    mblogid = statusesBean.mid;
+                    WeiboPageUtils.getInstance(mContext,authInfo).startUserMainPage(uid,useWeb);
+                }
+            });
             /**
              * 加载微博内容
              */
@@ -174,18 +226,34 @@ public class BaseRclvAdapter extends RecyclerView.Adapter {
                 }else {
                     holder.mReditPhotosRcylv.setVisibility(View.GONE);
                 }
+                holder.mReditLl.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        int pos = holder.getLayoutPosition();
+                        StatusesBean retweeted_status = mList.get(pos).retweeted_status;
+                        retweenUid = retweeted_status.idstr;
+                        mRetweenBlogid = retweeted_status.mid;
+                        WeiboPageUtils.getInstance(mContext,authInfo).startWeiboDetailPage(mRetweenBlogid,retweenUid,useWeb);
+                    }
+                });
             }else {
                 holder.mReditLl.setVisibility(View.GONE);
             }
             // 如果设置了回调，则设置点击事件
             if (mOnItemClickLitener != null) {
+
                 holder.itemView.setOnClickListener(new View.OnClickListener()
                 {
                     @Override
-                    public void onClick(View v)
-                    {
+                    public void onClick(View v) {
                         int pos = holder.getLayoutPosition();
                         mOnItemClickLitener.onItemClick(holder.itemView, pos);
+//                        LUtils.toastShort(mContext,"你点击了我pos=" + pos);
+//                        LUtils.toastShort(mContext,"你点击了我position=" + position);
+                        StatusesBean statusesBean = mList.get(pos);
+                        uid = statusesBean.idstr;
+                        mblogid = statusesBean.mid;
+                        WeiboPageUtils.getInstance(mContext,authInfo).startWeiboDetailPage(mblogid,uid,useWeb);
                     }
                 });
 
@@ -204,8 +272,8 @@ public class BaseRclvAdapter extends RecyclerView.Adapter {
             MyFooterViewHolder footerViewHolder = (MyFooterViewHolder) viewHolder;
             switch (load_more_status){
                 case PULL_LOAD_MORE:
-                footerViewHolder.foot_view_ll.setVisibility(View.VISIBLE);
-                footerViewHolder.foot_view_item_tv.setText("上拉加载更多...");
+                    footerViewHolder.foot_view_ll.setVisibility(View.VISIBLE);
+                    footerViewHolder.foot_view_item_tv.setText("上拉加载更多...");
                     break;
                 case LOADING_MORE:
                     footerViewHolder.foot_view_item_tv.setText("正在加载更多数据...");
@@ -216,6 +284,7 @@ public class BaseRclvAdapter extends RecyclerView.Adapter {
         }
     }
 
+    //延迟刷新界面，但是会跟Adapter本身的刷新冲突
     private void handlerDataChange(final int position) {
         Handler handler = new Handler();
         final Runnable r = new Runnable() {
@@ -225,7 +294,6 @@ public class BaseRclvAdapter extends RecyclerView.Adapter {
             }
         };
         handler.post(r);
-
     }
 
     @Override
@@ -237,7 +305,7 @@ public class BaseRclvAdapter extends RecyclerView.Adapter {
         }
     }
 
-    public void changeMoreStatus(int status){
+    public static void changeMoreStatus(int status){
         load_more_status = status;
     }
 
@@ -292,7 +360,7 @@ public class BaseRclvAdapter extends RecyclerView.Adapter {
         adapter.setOnItemClickListener(new GridRclvAdapter.OnItemClickListener() {
             @Override
             public void OnClickListener(View v, int position) {
-                
+
             }
 
             @Override
@@ -306,7 +374,7 @@ public class BaseRclvAdapter extends RecyclerView.Adapter {
 
     @Override
     public int getItemCount() {
-        return mList.size() + 1;
+        return mList ==  null ? 0 : mList.size() + 1;
     }
 
 
@@ -322,6 +390,7 @@ public class BaseRclvAdapter extends RecyclerView.Adapter {
         private TextView mReportsCount;
         private TextView mCommentsCount;
         private TextView mAttitudesCount;
+        private LinearLayout mItemRclvLl;
         private LinearLayout mReditLl;
         private TextView mReditContent;
 
@@ -338,6 +407,7 @@ public class BaseRclvAdapter extends RecyclerView.Adapter {
             mReportsCount = (TextView) itemView.findViewById(R.id.item_common_rcyl_user_report_count);
             mCommentsCount = (TextView) itemView.findViewById(R.id.item_common_rcyl_user_comment_count);
             mAttitudesCount = (TextView) itemView.findViewById(R.id.item_common_rcyl_user_like_count);
+            mItemRclvLl = (LinearLayout) itemView.findViewById(R.id.item_common_rcyl_ll);
             mReditLl = (LinearLayout) itemView.findViewById(R.id.item_common_rcyl_redit_ll);
             mReditContent = (TextView) itemView.findViewById(R.id.item_common_rcyl_redit_content);
         }

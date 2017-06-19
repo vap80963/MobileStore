@@ -1,13 +1,12 @@
 package com.tin.chigua.mywebo.fragments;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,16 +15,15 @@ import android.view.ViewGroup;
 import com.google.gson.JsonArray;
 import com.sina.weibo.sdk.net.WeiboParameters;
 import com.tin.chigua.mywebo.R;
-import com.tin.chigua.mywebo.activities.OauthActivity;
 import com.tin.chigua.mywebo.adapter.BaseRclvAdapter;
 import com.tin.chigua.mywebo.bean.HttpResponse;
 import com.tin.chigua.mywebo.bean.StatusesBean;
+import com.tin.chigua.mywebo.cache.ConfigCache;
 import com.tin.chigua.mywebo.constant.Constants;
 import com.tin.chigua.mywebo.constant.ParameterKeySet;
 import com.tin.chigua.mywebo.constant.StaticUtil;
 import com.tin.chigua.mywebo.constant.UrlUtil;
 import com.tin.chigua.mywebo.net.BaseNetwork;
-import com.tin.chigua.mywebo.cache.ConfigCache;
 import com.tin.chigua.mywebo.utils.GsonUtil;
 import com.tin.chigua.mywebo.utils.LUtils;
 import com.tin.chigua.mywebo.utils.MySharePreferences;
@@ -48,7 +46,8 @@ public class FriendsFragment extends BaseFragment {
     private static List<StatusesBean> mList;
     private static Context mContext;
     private LinearLayoutManager mManager;
-    private boolean isCacheExisted = false;
+    private int lastVisibleItem = 0;
+    private static int count = 30;
 
     private static WeiboParameters mParameters;
 
@@ -68,7 +67,10 @@ public class FriendsFragment extends BaseFragment {
             public WeiboParameters onPrepare() {
                 mParameters.put(ParameterKeySet.AUTH_ACCESS_TOKEN, MySharePreferences.getToken(mContext));
                 mParameters.put(ParameterKeySet.PAGE, 1);
-                mParameters.put(ParameterKeySet.COUNT, 20);
+                if(loadMode == StaticUtil.MORE_DOWN_SIGN){
+                    count += 10;
+                }
+                mParameters.put(ParameterKeySet.COUNT, count);
                 return mParameters;
             }
 
@@ -99,11 +101,12 @@ public class FriendsFragment extends BaseFragment {
                         mSwipeLayout.setRefreshing(false);
                     }
 //                    LUtils.toastShort(mContext,"list.size = " + mList.size());
+                    BaseRclvAdapter.changeMoreStatus(BaseRclvAdapter.LOAD_COMPLETE);
                     mAdapter.notifyDataSetChanged();
                 } else {
                     LUtils.logE(mContext,response.message);
                     LUtils.toastShort(mContext,"刷新微博失败，请重试");
-                    mContext.startActivity(new Intent(mContext, OauthActivity.class));
+//                    mContext.startActivity(new Intent(mContext, OauthActivity.class));
 //                    OauthActivity.refreshToken();
                 }
             }
@@ -153,9 +156,28 @@ public class FriendsFragment extends BaseFragment {
             @Override
             public void onItemClick(View view, int position) {
 //                LUtils.toastShort(mContext,"position = " + position);
+
             }
             @Override
             public void onItemLongClick(View view, int position) {
+            }
+        });
+        mRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if (newState == RecyclerView.SCROLL_STATE_IDLE && lastVisibleItem + 1 == mAdapter.getItemCount()){
+                    BaseRclvAdapter.changeMoreStatus(BaseRclvAdapter.LOADING_MORE);
+                    LUtils.logE(getActivity(),"lastVisibleItem = " + lastVisibleItem);
+                    LUtils.logE(getActivity(),"mAdapter.getItemCount() = " + mAdapter.getItemCount());
+                    startRequestData(UrlUtil.HOME_TIMELINE,StaticUtil.MORE_DOWN_SIGN);
+                }
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                lastVisibleItem = mManager.findLastVisibleItemPosition();
             }
         });
         mRecyclerView.setAdapter(mAdapter);
@@ -176,9 +198,7 @@ public class FriendsFragment extends BaseFragment {
         });
     }
 
-
-
-    public static Fragment newInstance(){
+    public static FriendsFragment newInstance(){
         FriendsFragment fragment = null;
         if(null == fragment){
             fragment = new FriendsFragment();
