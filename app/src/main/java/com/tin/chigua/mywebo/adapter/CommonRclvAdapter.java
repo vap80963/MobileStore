@@ -1,6 +1,7 @@
 package com.tin.chigua.mywebo.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Handler;
 import android.support.v7.widget.GridLayoutManager;
@@ -11,6 +12,7 @@ import android.text.method.LinkMovementMethod;
 import android.util.TypedValue;
 import android.view.KeyCharacterMap;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -40,7 +42,7 @@ import java.util.Map;
  * Created by hasee on 5/16/2017.
  */
 
-public class BaseRclvAdapter extends RecyclerView.Adapter {
+public class CommonRclvAdapter extends RecyclerView.Adapter {
 
     private List<StatusesBean> mList = new LinkedList<>();
     private Context mContext;
@@ -54,7 +56,7 @@ public class BaseRclvAdapter extends RecyclerView.Adapter {
     private static final int TYPE_FOOTER = 002; //底部footer
     private static int load_more_status = 003;  //上拉加载的状态，有上拉刷新、正在加载
     /*
-    上拉加载的两个状态
+    上拉加载的三个状态
      */
     public static final int PULL_LOAD_MORE = 100;  //上拉刷新
     public static final int LOADING_MORE= 101;  //正在加载
@@ -67,7 +69,7 @@ public class BaseRclvAdapter extends RecyclerView.Adapter {
     private boolean useWeb = true;
     private AuthInfo authInfo;
 
-    public BaseRclvAdapter(Context context, List<StatusesBean> data){
+    public CommonRclvAdapter(Context context, List<StatusesBean> data){
         mContext = context;
         mList = data;
         mInflater = LayoutInflater.from(mContext);
@@ -78,9 +80,9 @@ public class BaseRclvAdapter extends RecyclerView.Adapter {
         void onItemLongClick(View view , int position);
     }
 
-    private BaseRclvAdapter.OnItemClickLitener mOnItemClickLitener;
+    private CommonRclvAdapter.OnItemClickLitener mOnItemClickLitener;
 
-    public void setOnItemClickLitener(BaseRclvAdapter.OnItemClickLitener mOnItemClickLitener) {
+    public void setOnItemClickLitener(CommonRclvAdapter.OnItemClickLitener mOnItemClickLitener) {
         this.mOnItemClickLitener = mOnItemClickLitener;
     }
 
@@ -108,27 +110,24 @@ public class BaseRclvAdapter extends RecyclerView.Adapter {
         }
         if (viewHolder instanceof MyItemViewHolder){
             final MyItemViewHolder holder = (MyItemViewHolder) viewHolder;
-            if (width == 0 || height == 0){
-                LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) holder.mIcon.getLayoutParams();
-                width = lp.width;
-                height = lp.height;
-            }
             StatusesBean statuses = mList.get(position);
             /**
              * 加载微博发布者的头像
              */
             final Uri uri = Uri.parse(statuses.user.avatar_large);
-            Glide.with(mContext)
-                    .load(uri)
+//            if(FriendsFragment.isReclvIdle){
+                Glide.with(mContext)
+                        .load(uri)
 //                    .asBitmap()
-                    .transform(new CircleTransform(mContext))
-                    .centerCrop()
+                        .transform(new CircleTransform(mContext))
+                        .centerCrop()
 //                    .placeholder(R.color.gray)  //
-                    .crossFade()
-                    .diskCacheStrategy(DiskCacheStrategy.RESULT)
-                    .error(R.drawable.image_error)
-                    .priority(Priority.HIGH)
-                    .into(holder.mIcon);
+                        .crossFade()
+                        .diskCacheStrategy(DiskCacheStrategy.RESULT)
+                        .error(R.drawable.image_error)
+                        .priority(Priority.HIGH)
+                        .into(holder.mIcon);
+//            }
             //同样可以实现加载成为圆形图片
 //                    .into(new BitmapImageViewTarget(holder.mIcon){
 //                        @Override
@@ -145,13 +144,7 @@ public class BaseRclvAdapter extends RecyclerView.Adapter {
 //                        }
 //                    });
             authInfo = new AuthInfo(mContext, Constants.APP_KEY, Constants.REDIRECT_URL, Constants.SCOPE);
-/*            holder.mItemRclvLl.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    WeiboPageUtils.getInstance(mContext,authInfo).startWeiboDetailPage(mblogid,uid,useWeb);
-                }
-            });*/
-            holder.mContent.setOnClickListener(new View.OnClickListener() {
+            holder.mItemRclvLl.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     StatusesBean statusesBean = mList.get(holder.getLayoutPosition());
@@ -159,6 +152,25 @@ public class BaseRclvAdapter extends RecyclerView.Adapter {
                     mblogid = statusesBean.mid;
 //                    WeiboPageUtils.getInstance(mContext,authInfo).startUserMainPage(uid,useWeb);
                     WeiboPageUtils.getInstance(mContext,authInfo).startWeiboDetailPage(mblogid,uid,useWeb);
+                }
+            });
+            holder.mItemRclvLl.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    switch (event.getAction()){
+                        case MotionEvent.ACTION_DOWN:
+                            holder.mItemRclvLl.setBackgroundColor(Color.LTGRAY);
+                            break;
+                        case MotionEvent.ACTION_MOVE:
+                            holder.mItemRclvLl.setBackgroundColor(Color.WHITE);
+                            break;
+                        case MotionEvent.ACTION_UP:
+                            holder.mItemRclvLl.setBackgroundColor(Color.WHITE);
+                            break;
+                        default:
+                            break;
+                    }
+                    return false;
                 }
             });
             holder.mUserName.setOnClickListener(new View.OnClickListener() {
@@ -246,14 +258,13 @@ public class BaseRclvAdapter extends RecyclerView.Adapter {
                 {
                     @Override
                     public void onClick(View v) {
-                        int pos = holder.getLayoutPosition();
-                        mOnItemClickLitener.onItemClick(holder.itemView, pos);
-//                        LUtils.toastShort(mContext,"你点击了我pos=" + pos);
-//                        LUtils.toastShort(mContext,"你点击了我position=" + position);
-                        StatusesBean statusesBean = mList.get(pos);
-                        uid = statusesBean.idstr;
-                        mblogid = statusesBean.mid;
-                        WeiboPageUtils.getInstance(mContext,authInfo).startWeiboDetailPage(mblogid,uid,useWeb);
+
+//                        int pos = holder.getLayoutPosition();
+//                        mOnItemClickLitener.onItemClick(holder.itemView, pos);
+//                        StatusesBean statusesBean = mList.get(pos);
+//                        uid = statusesBean.idstr;
+//                        mblogid = statusesBean.mid;
+//                        WeiboPageUtils.getInstance(mContext,authInfo).startWeiboDetailPage(mblogid,uid,useWeb);
                     }
                 });
 
@@ -276,6 +287,7 @@ public class BaseRclvAdapter extends RecyclerView.Adapter {
                     footerViewHolder.foot_view_item_tv.setText("上拉加载更多...");
                     break;
                 case LOADING_MORE:
+                    footerViewHolder.foot_view_ll.setVisibility(View.VISIBLE);
                     footerViewHolder.foot_view_item_tv.setText("正在加载更多数据...");
                     break;
                 case LOAD_COMPLETE:
@@ -407,7 +419,7 @@ public class BaseRclvAdapter extends RecyclerView.Adapter {
             mReportsCount = (TextView) itemView.findViewById(R.id.item_common_rcyl_user_report_count);
             mCommentsCount = (TextView) itemView.findViewById(R.id.item_common_rcyl_user_comment_count);
             mAttitudesCount = (TextView) itemView.findViewById(R.id.item_common_rcyl_user_like_count);
-            mItemRclvLl = (LinearLayout) itemView.findViewById(R.id.item_common_rcyl_ll);
+            mItemRclvLl = (LinearLayout) itemView.findViewById(R.id.item_common_content_ll);
             mReditLl = (LinearLayout) itemView.findViewById(R.id.item_common_rcyl_redit_ll);
             mReditContent = (TextView) itemView.findViewById(R.id.item_common_rcyl_redit_content);
         }

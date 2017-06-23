@@ -7,7 +7,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTabHost;
 import android.support.v4.app.FragmentTransaction;
 import android.util.AttributeSet;
 import android.view.View;
@@ -314,8 +313,7 @@ public class FragmentTabhost extends TabHost implements
         }
     }
 
-    private FragmentTransaction doTabChanged(String tabId,
-                                             FragmentTransaction ft) {
+    private FragmentTransaction doTabChanged(String tabId, FragmentTransaction ft) {
         TabInfo newTab = null;
         for (int i = 0; i < mTabs.size(); i++) {
             TabInfo tab = mTabs.get(i);

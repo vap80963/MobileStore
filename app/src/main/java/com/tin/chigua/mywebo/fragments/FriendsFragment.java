@@ -15,7 +15,7 @@ import android.view.ViewGroup;
 import com.google.gson.JsonArray;
 import com.sina.weibo.sdk.net.WeiboParameters;
 import com.tin.chigua.mywebo.R;
-import com.tin.chigua.mywebo.adapter.BaseRclvAdapter;
+import com.tin.chigua.mywebo.adapter.CommonRclvAdapter;
 import com.tin.chigua.mywebo.bean.HttpResponse;
 import com.tin.chigua.mywebo.bean.StatusesBean;
 import com.tin.chigua.mywebo.cache.ConfigCache;
@@ -30,6 +30,7 @@ import com.tin.chigua.mywebo.utils.MySharePreferences;
 import com.tin.chigua.mywebo.view.MyRecyclerView;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 
@@ -42,12 +43,13 @@ public class FriendsFragment extends BaseFragment {
     public static SwipeRefreshLayout mSwipeLayout;
 
     private static MyRecyclerView mRecyclerView;
-    private static BaseRclvAdapter mAdapter;
+    private static CommonRclvAdapter mAdapter;
     private static List<StatusesBean> mList;
     private static Context mContext;
     private LinearLayoutManager mManager;
     private int lastVisibleItem = 0;
     private static int count = 30;
+    public static boolean isReclvIdle = true;
 
     private static WeiboParameters mParameters;
 
@@ -91,7 +93,7 @@ public class FriendsFragment extends BaseFragment {
                             updateListData(list);
                             break;
                         case StaticUtil.MORE_DOWN_SIGN:
-                            mList.addAll(list);
+                            addMoreListData(list);
                             break;
                         default:
                             break;
@@ -101,7 +103,7 @@ public class FriendsFragment extends BaseFragment {
                         mSwipeLayout.setRefreshing(false);
                     }
 //                    LUtils.toastShort(mContext,"list.size = " + mList.size());
-                    BaseRclvAdapter.changeMoreStatus(BaseRclvAdapter.LOAD_COMPLETE);
+                    CommonRclvAdapter.changeMoreStatus(CommonRclvAdapter.LOAD_COMPLETE);
                     mAdapter.notifyDataSetChanged();
                 } else {
                     LUtils.logE(mContext,response.message);
@@ -113,6 +115,22 @@ public class FriendsFragment extends BaseFragment {
         }.get();
     }
 
+    private void addMoreListData(List<StatusesBean> list){
+        if (null != list && list.size() > 0 && mList.size() > 0){
+            int position = mList.size();
+            Iterator<StatusesBean> iterator = list.iterator();
+            do{
+                StatusesBean statusesBean = iterator.next();
+                if (statusesBean == mList.get(position)){
+                    while (iterator.hasNext()){
+                        mList.add(statusesBean);
+                        statusesBean = iterator.next();
+                    }
+                    break;
+                }
+            }while (iterator.hasNext());
+        }
+    }
 
     private static void updateListData(List<StatusesBean> list) {
         if (null != list && list.size() > 0 && mList.size() > 0){
@@ -128,7 +146,7 @@ public class FriendsFragment extends BaseFragment {
     }
 
     public void moveRecylvToPosition(int position){
-        BaseRclvAdapter.MoveToPosition(mRecyclerView,position);
+        CommonRclvAdapter.MoveToPosition(mRecyclerView,position);
     }
 
     private void init() {
@@ -151,8 +169,8 @@ public class FriendsFragment extends BaseFragment {
         mRecyclerView.setLayoutManager(mManager);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
 //        mRecyclerView.addItemDecoration(new DividerItemDecoration(mContext, DividerItemDecoration.VERTICAL));
-        mAdapter = new BaseRclvAdapter(mContext,mList);
-        mAdapter.setOnItemClickLitener(new BaseRclvAdapter.OnItemClickLitener() {
+        mAdapter = new CommonRclvAdapter(mContext,mList);
+        mAdapter.setOnItemClickLitener(new CommonRclvAdapter.OnItemClickLitener() {
             @Override
             public void onItemClick(View view, int position) {
 //                LUtils.toastShort(mContext,"position = " + position);
@@ -166,8 +184,14 @@ public class FriendsFragment extends BaseFragment {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
+                if(newState == RecyclerView.SCROLL_STATE_IDLE){
+                    isReclvIdle = true;
+                    mAdapter.notifyDataSetChanged();
+                }else {
+                    isReclvIdle = false;
+                }
                 if (newState == RecyclerView.SCROLL_STATE_IDLE && lastVisibleItem + 1 == mAdapter.getItemCount()){
-                    BaseRclvAdapter.changeMoreStatus(BaseRclvAdapter.LOADING_MORE);
+                    CommonRclvAdapter.changeMoreStatus(CommonRclvAdapter.LOADING_MORE);
                     LUtils.logE(getActivity(),"lastVisibleItem = " + lastVisibleItem);
                     LUtils.logE(getActivity(),"mAdapter.getItemCount() = " + mAdapter.getItemCount());
                     startRequestData(UrlUtil.HOME_TIMELINE,StaticUtil.MORE_DOWN_SIGN);

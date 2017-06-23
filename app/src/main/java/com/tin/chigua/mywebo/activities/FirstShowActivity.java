@@ -14,7 +14,6 @@ import com.sina.weibo.sdk.auth.AuthInfo;
 import com.tin.chigua.mywebo.R;
 import com.tin.chigua.mywebo.constant.Constants;
 import com.tin.chigua.mywebo.ui.ToolbarX;
-import com.tin.chigua.mywebo.utils.LUtils;
 import com.tin.chigua.mywebo.utils.MySharePreferences;
 
 /**
@@ -27,6 +26,7 @@ public class FirstShowActivity extends AppCompatActivity {
     private ActionBar mActionBar;
     private AuthInfo mAuthInfo;
     private ImageView mImageView;
+    private static boolean isFirstStart = true;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -36,16 +36,24 @@ public class FirstShowActivity extends AppCompatActivity {
 //        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 //        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_first_show);
-        if(!this.isTaskRoot()){
-            Intent intent = getIntent();
-            if(null != intent){
-                String action = intent.getAction();
-                if (intent.hasCategory(Intent.CATEGORY_LAUNCHER) && Intent.ACTION_MAIN.equals(action)){
+//        if(!isFirstStart){
+//            Intent intent = getIntent();
+//            if(null != intent){
+//                String action = intent.getAction();
+//                if (intent.hasCategory(Intent.CATEGORY_LAUNCHER) && Intent.ACTION_MAIN.equals(action)){
+////                    finish();
+//                    LUtils.toastShort(this,"activity栈中存在该Activity");
+//                    String token = MySharePreferences.getToken(FirstShowActivity.this);
+//                    if(token.equals("")){
+//                        startActivity(new Intent(FirstShowActivity.this,OauthActivity.class));
+//                    }else {
+//                        startActivity(new Intent(FirstShowActivity.this, MainActivity.class));
+//                    }
 //                    finish();
-                    LUtils.toastShort(this,"activity栈中存在该Activity");
-                }
-            }
-        }
+//                }
+//            }
+//        }
+//        isFirstStart = false;
         mImageView = (ImageView) findViewById(R.id.firstImgv);
         ObjectAnimator animator = ObjectAnimator.ofFloat(mImageView,"alpha",0.1f,1.0f);
         animator.setDuration(2000)

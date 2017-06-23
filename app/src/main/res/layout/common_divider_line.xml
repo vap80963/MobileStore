@@ -4,7 +4,7 @@
     android:id="@+id/common_divider_line"
     android:layout_width="match_parent"
     android:layout_height="0.3dp"
-    android:alpha="0.09"
+    android:alpha="0.15"
     android:background="@color/lightblack"
     >
 </View>

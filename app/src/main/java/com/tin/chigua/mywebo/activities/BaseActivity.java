@@ -29,14 +29,23 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setTheme(R.style.AppTheme);
+        setTheme(R.style.TranslucentTheme);
         setContentView(R.layout.activity_base_layout);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && !AndroidRomUtil.isEMUI()) {
             //透明状态栏
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             //透明导航栏
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+            setImmersePaddingTop();
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && AndroidRomUtil.isEMUI()) {
+            //透明状态栏
+//            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+//            //透明导航栏
+//            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
 //            setImmersePaddingTop();
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         }
         initialize();
         mToolbarX = new ToolbarX(mTooolbar,this);

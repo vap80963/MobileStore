@@ -45,7 +45,6 @@ public class OauthActivity extends BaseActivity {
     private TextView mTokenTv;
 
     private static MyApplication mApplication;
-    private static MySharePreferences mPreferences;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -55,7 +54,7 @@ public class OauthActivity extends BaseActivity {
         init();
 //        mAuthToken =  AccessTokenKeeper.readAccessToken(LoginActivity.this);
         mMidTv.setText("授权");
-        mAuthToken = mPreferences.getFromSP(OauthActivity.this);
+        mAuthToken = MySharePreferences.getFromSP(OauthActivity.this);
         if(mAuthToken.getToken().equals("")){
             beginOAuth();
         }else {
@@ -161,7 +160,7 @@ public class OauthActivity extends BaseActivity {
                         MySharePreferences.writeToSP(OauthActivity.this,mAuthToken);
                         startActivity(new Intent(OauthActivity.this,MainActivity.class));
                         LUtils.toastShort(OauthActivity.this,"授权成功,即将进入微博界面");
-                        LUtils.logE(OauthActivity.this,mAuthToken+"");
+//                        LUtils.logE(OauthActivity.this,mAuthToken+"");
                         finish();
                     }
                 }

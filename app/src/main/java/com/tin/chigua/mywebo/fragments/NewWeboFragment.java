@@ -24,7 +24,7 @@ public class NewWeboFragment extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        mBuilder = new AlertDialog.Builder(getActivity(),R.style.AlertDialog_Fullscreen);
+        mBuilder = new AlertDialog.Builder(getActivity(),R.style.AppTheme_FullScreen);
         mInflater = getActivity().getLayoutInflater();
         View view = mInflater.inflate(R.layout.fragment_new_webo,null);
 //        mBuilder.setView(view).setPositiveButton("确定", new DialogInterface.OnClickListener() {

@@ -17,8 +17,8 @@ import java.io.IOException;
 
 public class ConfigCache {
 
-    private static final int CONFIG_CACHE_MOBILE_TIME_OUT = 1000 * 60 * 60 * 5; //移动网络下超过5小时更新
-    private static final int CONFIG_CACHE_WIFI_TIME_OUT = 1000 * 60 * 60 * 1; //移动网络下超过1小时更新
+    private static final int CONFIG_CACHE_MOBILE_TIME_OUT = 1000 * 60 * 60 * 24; //移动网络下超过24小时更新
+    private static final int CONFIG_CACHE_WIFI_TIME_OUT = 1000 * 60 * 60 * 20; //移动网络下超过10小时更新
 
     public static final String STATUS_BEAN = "statuses_bean";
     private static final String TAG = "ConfigCache";
@@ -61,8 +61,8 @@ public class ConfigCache {
         try {
             //创建缓存数据到磁盘，就是创建文件
             FileUtils.writeTextFile(file, data.toString());
-            Log.e("jsonObject = ", data.get(STATUS_BEAN).toString());
-            Log.e("jsonObject = ", data.toString() + "");
+//            Log.e("jsonObject = ", data.get(STATUS_BEAN).toString());
+//            Log.e("jsonObject = ", data.toString() + "");
         } catch (IOException e) {
             Log.e("Config", "write " + file.getAbsolutePath() + " data failed!");
             e.printStackTrace();

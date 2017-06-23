@@ -65,15 +65,17 @@ public class GridRclvAdapter extends RecyclerView.Adapter {
         pic.bmiddle_pic = pic.thumbnail_pic.replace("thumbnail","bmiddle");
         String picUrl = pic.bmiddle_pic;
         //加载图片
-        Glide.with(mContext)
-             .load(picUrl)
-             .centerCrop()
-             .crossFade()
-             .placeholder(R.color.gray)
+//        if(FriendsFragment.isReclvIdle){
+            Glide.with(mContext)
+                    .load(picUrl)
+                    .centerCrop()
+                    .crossFade()
+                    .placeholder(R.color.gray)
 //             .fitCenter()
-             .diskCacheStrategy(DiskCacheStrategy.RESULT)
-             .error(R.drawable.image_error)
-             .into(imageViewHolder.mImageButton);
+                    .diskCacheStrategy(DiskCacheStrategy.RESULT)
+                    .error(R.drawable.image_error)
+                    .into(imageViewHolder.mImageButton);
+//        }
         if(null != mOnItemClickListener){
             imageViewHolder.mImageButton.setOnClickListener(new View.OnClickListener() {
                 @Override

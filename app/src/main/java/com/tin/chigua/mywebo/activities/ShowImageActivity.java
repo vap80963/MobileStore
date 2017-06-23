@@ -6,7 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.view.WindowManager;
+import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -15,6 +15,7 @@ import com.tin.chigua.mywebo.adapter.ShowImageViewPagerAdPater;
 import com.tin.chigua.mywebo.bean.PicUrlBean;
 import com.tin.chigua.mywebo.ui.ToolbarX;
 import com.tin.chigua.mywebo.utils.AndroidRomUtil;
+import com.tin.chigua.mywebo.utils.ScreenTools;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,13 +41,13 @@ public class ShowImageActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setTheme(R.style.AppTheme_Dark);
+        setTheme(R.style.AppTheme_FullScreen);
         setContentView(R.layout.activity_show_image);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && !AndroidRomUtil.isEMUI()) {
-            //透明状态栏
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            //透明导航栏
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+//            //透明状态栏
+//            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+//            //透明导航栏
+//            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
 //            setImmersePaddingTop();
         }
         init();
@@ -65,6 +66,10 @@ public class ShowImageActivity extends AppCompatActivity {
 //        overridePendingTransition();
     }
 
+    private void setImmersePaddingTop() {
+        ViewGroup viewGroup = (ViewGroup) ((ViewGroup) findViewById(android.R.id.content)).getChildAt(0);
+        viewGroup.setPadding(0, ScreenTools.instance(this).getStatusBarHeight(), 0, 0);
+    }
 
     @Override
     public void onBackPressed() {
