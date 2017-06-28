@@ -55,7 +55,7 @@ public class GridRclvAdapter extends RecyclerView.Adapter {
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
+    public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
         MyImageViewHolder imageViewHolder = null;
         if(holder instanceof MyImageViewHolder){
             imageViewHolder = (MyImageViewHolder) holder;
@@ -65,8 +65,7 @@ public class GridRclvAdapter extends RecyclerView.Adapter {
         pic.bmiddle_pic = pic.thumbnail_pic.replace("thumbnail","bmiddle");
         String picUrl = pic.bmiddle_pic;
         //加载图片
-//        if(FriendsFragment.isReclvIdle){
-            Glide.with(mContext)
+        Glide.with(mContext)
                     .load(picUrl)
                     .centerCrop()
                     .crossFade()
@@ -75,7 +74,6 @@ public class GridRclvAdapter extends RecyclerView.Adapter {
                     .diskCacheStrategy(DiskCacheStrategy.RESULT)
                     .error(R.drawable.image_error)
                     .into(imageViewHolder.mImageButton);
-//        }
         if(null != mOnItemClickListener){
             imageViewHolder.mImageButton.setOnClickListener(new View.OnClickListener() {
                 @Override

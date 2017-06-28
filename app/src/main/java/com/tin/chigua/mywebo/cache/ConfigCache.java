@@ -18,7 +18,7 @@ import java.io.IOException;
 public class ConfigCache {
 
     private static final int CONFIG_CACHE_MOBILE_TIME_OUT = 1000 * 60 * 60 * 24; //移动网络下超过24小时更新
-    private static final int CONFIG_CACHE_WIFI_TIME_OUT = 1000 * 60 * 60 * 20; //移动网络下超过10小时更新
+    private static final int CONFIG_CACHE_WIFI_TIME_OUT = 1000 * 60 * 60 * 10; //移动网络下超过10小时更新
 
     public static final String STATUS_BEAN = "statuses_bean";
     private static final String TAG = "ConfigCache";

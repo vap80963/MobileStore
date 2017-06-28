@@ -90,10 +90,6 @@ public class CommonRclvAdapter extends RecyclerView.Adapter {
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if(viewType == TYPE_ITEM){  //如果为TYPE_ITEM类型，则加载MyItemVIewHolder
             View itemView = mInflater.inflate(R.layout.item_common_rcylv,parent,false);
-            //设置点击事件的动画
-            TypedValue typedValue = new TypedValue();
-            mContext.getTheme().resolveAttribute(R.attr.selectableItemBackgroundBorderless, typedValue, true);
-//            itemView.setBackgroundResource(typedValue.resourceId);
             return new MyItemViewHolder(itemView);
         }else if (viewType == TYPE_FOOTER){  //如果为TYPE_FOOTER类型，则加载MyFooterViewHolder
             View footerView = mInflater.inflate(R.layout.item_footer_rcylv,parent,false);
@@ -154,12 +150,45 @@ public class CommonRclvAdapter extends RecyclerView.Adapter {
                     WeiboPageUtils.getInstance(mContext,authInfo).startWeiboDetailPage(mblogid,uid,useWeb);
                 }
             });
+            holder.mContent.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    StatusesBean statusesBean = mList.get(holder.getLayoutPosition());
+                    uid = statusesBean.idstr;
+                    mblogid = statusesBean.mid;
+//                    WeiboPageUtils.getInstance(mContext,authInfo).startUserMainPage(uid,useWeb);
+                    WeiboPageUtils.getInstance(mContext,authInfo).startWeiboDetailPage(mblogid,uid,useWeb);
+                }
+            });
+            holder.mContent.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    TypedValue typedValue = new TypedValue();
+                    mContext.getTheme().resolveAttribute(R.attr.selectableItemBackground, typedValue, true);
+                    switch (event.getAction()){
+                        case MotionEvent.ACTION_DOWN:
+                            holder.mItemRclvLl.setBackgroundResource(typedValue.resourceId);
+                            break;
+                        case MotionEvent.ACTION_MOVE:
+                            holder.mItemRclvLl.setBackgroundColor(Color.WHITE);
+                            break;
+                        case MotionEvent.ACTION_UP:
+                            holder.mItemRclvLl.setBackgroundColor(Color.WHITE);
+                            break;
+                        default:
+                            break;
+                    }
+                    return false;
+                }
+            });
             holder.mItemRclvLl.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
+                    TypedValue typedValue = new TypedValue();
+                    mContext.getTheme().resolveAttribute(R.attr.selectableItemBackground, typedValue, true);
                     switch (event.getAction()){
                         case MotionEvent.ACTION_DOWN:
-                            holder.mItemRclvLl.setBackgroundColor(Color.LTGRAY);
+                            holder.mItemRclvLl.setBackgroundResource(typedValue.resourceId);
                             break;
                         case MotionEvent.ACTION_MOVE:
                             holder.mItemRclvLl.setBackgroundColor(Color.WHITE);
@@ -227,7 +256,12 @@ public class CommonRclvAdapter extends RecyclerView.Adapter {
              * 以下为转发内容显示
              */
             if(statuses.retweeted_status != null){
-                String mReditText = "@" + statuses.retweeted_status.user.screen_name + " " + statuses.retweeted_status.text;
+                String mReditText ;
+                if(statuses.retweeted_status.user != null){
+                    mReditText = "@" + statuses.retweeted_status.user.screen_name + " " + statuses.retweeted_status.text;
+                }else {
+                    mReditText = "@" + " " + statuses.retweeted_status.text;
+                }
                 holder.mReditLl.setVisibility(View.VISIBLE);
                 holder.mReditContent.setText(RichTextUtil.getSpanString(mContext,mReditText));
                 List<PicUrlBean> reditPics = new ArrayList<>();
@@ -292,6 +326,7 @@ public class CommonRclvAdapter extends RecyclerView.Adapter {
                     break;
                 case LOAD_COMPLETE:
                     footerViewHolder.foot_view_ll.setVisibility(View.GONE);
+                    load_more_status = PULL_LOAD_MORE;
             }
         }
     }
@@ -434,6 +469,5 @@ public class CommonRclvAdapter extends RecyclerView.Adapter {
             foot_view_ll = (LinearLayout) view.findViewById(R.id.foot_view_ll);
             foot_view_item_tv=(TextView)view.findViewById(R.id.foot_view_item_tv);
         }
-
     }
 }

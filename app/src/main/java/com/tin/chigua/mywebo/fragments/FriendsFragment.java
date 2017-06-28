@@ -83,6 +83,7 @@ public class FriendsFragment extends BaseFragment {
                     List<StatusesBean> list = GsonUtil.analyzeJson(response.response);
                     //用JsonObject类把jsonArray包装
                     GsonUtil.wrapperToJsonObject(response.response,url);
+
                     //用分支判断当前的请求数据状态，决定本次的请求结果的处理方式
                     switch (loadMode){
                         case StaticUtil.FIRST_DOWN_SIGN:
@@ -117,18 +118,18 @@ public class FriendsFragment extends BaseFragment {
 
     private void addMoreListData(List<StatusesBean> list){
         if (null != list && list.size() > 0 && mList.size() > 0){
-            int position = mList.size();
+            int position = mList.size() - 1;
             Iterator<StatusesBean> iterator = list.iterator();
-            do{
+            while (iterator.hasNext()){
                 StatusesBean statusesBean = iterator.next();
-                if (statusesBean == mList.get(position)){
-                    while (iterator.hasNext()){
-                        mList.add(statusesBean);
+                if (statusesBean.id == mList.get(position).id){
+                    do {
                         statusesBean = iterator.next();
-                    }
+                        mList.add(statusesBean);
+                    } while (iterator.hasNext());
                     break;
                 }
-            }while (iterator.hasNext());
+            }
         }
     }
 

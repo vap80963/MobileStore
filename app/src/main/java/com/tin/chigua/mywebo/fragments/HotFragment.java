@@ -30,6 +30,7 @@ import com.tin.chigua.mywebo.utils.MySharePreferences;
 import com.tin.chigua.mywebo.view.MyRecyclerView;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import static com.tin.chigua.mywebo.fragments.FriendsFragment.isReclvIdle;
@@ -83,8 +84,8 @@ public class HotFragment extends BaseFragment {
                     List<StatusesBean> list = GsonUtil.analyzeJson(response.response);
                     //用JsonObject类把jsonArray包装
                     GsonUtil.wrapperToJsonObject(response.response,url);
-                    //用分支判断当前的请求数据状态，决定本次的请求结果的处理方式
 
+                    //用分支判断当前的请求数据状态，决定本次的请求结果的处理方式
                     switch (loadMode){
                         case StaticUtil.FIRST_DOWN_SIGN:
                             mList.clear();
@@ -94,7 +95,7 @@ public class HotFragment extends BaseFragment {
                             updateListData(list);
                             break;
                         case StaticUtil.MORE_DOWN_SIGN:
-                            mList.addAll(list);
+                            addMoreListData(list);
                             break;
                         default:
                             break;
@@ -112,6 +113,23 @@ public class HotFragment extends BaseFragment {
                 }
             }
         }.get();
+    }
+
+    private static void addMoreListData(List<StatusesBean> list){
+        if (null != list && list.size() > 0 && mList.size() > 0){
+            int position = mList.size() - 1;
+            Iterator<StatusesBean> iterator = list.iterator();
+            while (iterator.hasNext()){
+                StatusesBean statusesBean = iterator.next();
+                if (statusesBean.id == mList.get(position).id){
+                    do {
+                        statusesBean = iterator.next();
+                        mList.add(statusesBean);
+                    } while (iterator.hasNext());
+                    break;
+                }
+            }
+        }
     }
 
     private static void updateListData(List<StatusesBean> list) {
