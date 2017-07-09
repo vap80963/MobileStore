@@ -74,7 +74,7 @@ public class GridRclvAdapter extends RecyclerView.Adapter {
                     .placeholder(R.color.gray)
 //             .fitCenter()
                     .diskCacheStrategy(DiskCacheStrategy.RESULT)
-                    .error(R.drawable.image_error)
+                    .error(R.drawable.ic_icon_image_error)
                     .into(imageViewHolder.mImageButton);
         }
         if(null != mOnItemClickListener){

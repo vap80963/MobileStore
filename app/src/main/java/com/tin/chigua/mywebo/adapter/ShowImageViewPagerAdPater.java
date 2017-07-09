@@ -87,7 +87,7 @@ public class ShowImageViewPagerAdPater extends PagerAdapter {
 //                })
 //                .animate(R.anim.)
                 .diskCacheStrategy(DiskCacheStrategy.RESULT)
-                .error(R.drawable.image_error)
+                .error(R.drawable.ic_icon_image_error)
                 .into(mPhotoView);
         ((ViewPager)container).addView(view);
         return view;

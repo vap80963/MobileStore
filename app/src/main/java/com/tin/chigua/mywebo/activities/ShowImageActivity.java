@@ -126,7 +126,7 @@ public class ShowImageActivity extends AppCompatActivity {
 //                    .centerCrop()
 ////                .animate(R.anim.)
 //                    .diskCacheStrategy(DiskCacheStrategy.RESULT)
-//                    .error(R.drawable.image_error)
+//                    .error(R.drawable.ic_icon_image_error)
 //                    .into(mPhotoView);
         }
 

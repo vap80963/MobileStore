@@ -7,12 +7,21 @@
               android:clickable="true"
     >
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/size_12"
+        android:alpha="0.1"
+        android:id="@+id/view"
+        >
+    </View>
+
     <LinearLayout
         android:id="@+id/item_common_content_ll"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:background="@color/white"
+        android:background="@drawable/corner_5dp"
+        android:elevation="@dimen/size_8"
         >
 
         <LinearLayout
@@ -163,7 +172,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/size_4"
                     android:drawablePadding="@dimen/size_4"
-                    android:drawableLeft="@drawable/ic_toolbar_icon_retweet"
+                    android:drawableLeft="@drawable/ic_icon_share"
                     android:textColor="@color/gray"
                     android:text="@string/report"
                     />
@@ -176,7 +185,7 @@
                 android:alpha="0.25"
                 android:layout_marginTop="@dimen/size_4"
                 android:layout_marginBottom="@dimen/size_4"
-                android:background="@drawable/view_gradient"
+                android:background="@drawable/view_vertical_gradient"
                 ></View>
 
             <LinearLayout
@@ -192,7 +201,7 @@
                     android:id="@+id/item_common_rcyl_user_comment_count"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:drawableLeft="@drawable/ic_toolbar_icon_comment"
+                    android:drawableLeft="@drawable/ic_icon_comment"
                     android:drawablePadding="@dimen/size_4"
                     android:textColor="@color/gray"
                     android:layout_marginLeft="@dimen/size_4"
@@ -200,15 +209,6 @@
                     />
 
             </LinearLayout>
-
-            <View
-                android:layout_width="0.5dp"
-                android:layout_height="match_parent"
-                android:alpha="0.25"
-                android:layout_marginTop="@dimen/size_4"
-                android:layout_marginBottom="@dimen/size_4"
-                android:background="@drawable/view_gradient"
-                ></View>
 
             <LinearLayout
                 android:id="@+id/item_common_rcyl_user_like_ll"
@@ -224,7 +224,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/size_4"
-                    android:drawableLeft="@drawable/ic_icon_unlike"
+                    android:drawableLeft="@drawable/ic_icon_like"
                     android:drawablePadding="@dimen/size_4"
                     android:textColor="@color/gray"
                     android:text="@string/like"
@@ -232,18 +232,18 @@
 
             </LinearLayout>
 
+            <View
+                android:layout_width="0.5dp"
+                android:layout_height="match_parent"
+                android:alpha="0.25"
+                android:layout_marginTop="@dimen/size_4"
+                android:layout_marginBottom="@dimen/size_4"
+                android:background="@drawable/view_vertical_gradient"
+                ></View>
+
         </LinearLayout>
 
+
     </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/size_10"
-        android:alpha="0.1"
-        android:background="@color/gray"
-        >
-    </View>
-
-    <include layout="@layout/common_divider_line"></include>
 
 </LinearLayout>

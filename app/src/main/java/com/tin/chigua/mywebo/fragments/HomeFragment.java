@@ -96,8 +96,16 @@ public class HomeFragment extends BaseFragment implements NavigationView.OnNavig
         drawer = (DrawerLayout) v.findViewById(R.id.common_drawerlayout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 getActivity(), drawer, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        toggle.setDrawerIndicatorEnabled(false);
+//        mToolbar.setNavigationIcon(R.drawable.ic_menu_camera);
+        toggle.setHomeAsUpIndicator(R.drawable.ic_menu_menu);
         drawer.setDrawerListener(toggle);
-
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                drawer.openDrawer(GravityCompat.START);
+            }
+        });
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) v.findViewById(R.id.nav_view);

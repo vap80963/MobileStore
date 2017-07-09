@@ -8,25 +8,6 @@
     android:fitsSystemWindows="true"
     tools:context="com.tin.chigua.mywebo.activities.Main2Activity">
 
-    <android.support.design.widget.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay">
-
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/home_common_toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            app:popupTheme="@style/AppTheme.PopupOverlay"
-            android:background="@color/green"
-            >
-
-            <include layout="@layout/switch_tab_rl"></include>
-
-        </android.support.v7.widget.Toolbar>
-
-    </android.support.design.widget.AppBarLayout>
-
     <View
         android:id="@+id/common_divider_line"
         android:layout_width="match_parent"
@@ -41,8 +22,31 @@
         android:id="@+id/home_viewpager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/common_divider_line"
+        android:paddingLeft="@dimen/size_8"
+        android:paddingRight="@dimen/size_8"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
         >
     </android.support.v4.view.ViewPager>
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay"
+        android:gravity="center"
+        >
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/home_common_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            app:popupTheme="@style/AppTheme.PopupOverlay"
+            app:contentInsetStart="0dp"
+            >
+
+            <include layout="@layout/switch_tab_rl"></include>
+
+        </android.support.v7.widget.Toolbar>
+
+    </android.support.design.widget.AppBarLayout>
 
 </android.support.design.widget.CoordinatorLayout>

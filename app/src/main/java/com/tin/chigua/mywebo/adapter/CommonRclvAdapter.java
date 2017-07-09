@@ -1,7 +1,7 @@
 package com.tin.chigua.mywebo.adapter;
 
 import android.content.Context;
-import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Handler;
 import android.support.v7.widget.GridLayoutManager;
@@ -119,7 +119,7 @@ public class CommonRclvAdapter extends RecyclerView.Adapter {
 //                    .placeholder(R.color.gray)  //
                     .crossFade()
                     .diskCacheStrategy(DiskCacheStrategy.RESULT)
-                    .error(R.drawable.image_error)
+                    .error(R.drawable.ic_icon_image_error)
                     .priority(Priority.HIGH)
                     .into(holder.mIcon);
             //同样可以实现加载成为圆形图片
@@ -158,23 +158,26 @@ public class CommonRclvAdapter extends RecyclerView.Adapter {
                     WeiboPageUtils.getInstance(mContext,authInfo).startWeiboDetailPage(mblogid,uid,useWeb);
                 }
             });
-            holder.mItemRclvLl.setTag(holder.getAdapterPosition());
             holder.mItemRclvLl.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
                     TypedValue typedValue = new TypedValue();
                     mContext.getTheme().resolveAttribute(R.attr.selectableItemBackground, typedValue, true);
+                    holder.mItemRclvLl.setTag(holder.getLayoutPosition());
+                    Drawable drawable = mContext.getResources().getDrawable(R.drawable.corner_5dp);
                     switch (event.getAction()){
                         case MotionEvent.ACTION_DOWN:
-                            if((int)holder.mItemRclvLl.getTag() == holder.getAdapterPosition()){
+                            if ((int)holder.mItemRclvLl.getTag() == holder.getLayoutPosition()) {
                                 holder.mItemRclvLl.setBackgroundResource(typedValue.resourceId);
+                            } else {
+                                holder.mItemRclvLl.setBackgroundResource(R.drawable.corner_5dp);
                             }
                             break;
                         case MotionEvent.ACTION_MOVE:
-                            holder.mItemRclvLl.setBackgroundColor(Color.WHITE);
+                            holder.mItemRclvLl.setBackgroundResource(R.drawable.corner_5dp);
                             break;
                         case MotionEvent.ACTION_UP:
-                            holder.mItemRclvLl.setBackgroundColor(Color.WHITE);
+                            holder.mItemRclvLl.setBackgroundResource(R.drawable.corner_5dp);
                             break;
                         default:
                             break;
@@ -347,7 +350,7 @@ public class CommonRclvAdapter extends RecyclerView.Adapter {
 //                recyclerView.scrollToPosition(position);
             }else if (position == firstItem){
                 return;
-            }else if(position < 0){
+            }else if(position < 0 || position > lastItem){
                 throw new KeyCharacterMap.UnavailableException("The position is error,out of the range");
             }
         }
