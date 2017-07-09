@@ -45,6 +45,12 @@ public class GsonUtil {
 //        return list;
 //    }
 
+    /**
+     * 将请求返回的JsonAraay结果包装后，放入本地缓存起来
+     * @param response
+     * @param url
+     * @return
+     */
     public static JsonObject wrapperToJsonObject(JsonArray response, String url) {
 
         JsonObject jsonObject = new JsonObject();

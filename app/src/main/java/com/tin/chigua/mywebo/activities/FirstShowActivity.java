@@ -75,7 +75,8 @@ public class FirstShowActivity extends AppCompatActivity {
                 if(token.equals("")){
                     startActivity(new Intent(FirstShowActivity.this,OauthActivity.class));
                 }else {
-                    startActivity(new Intent(FirstShowActivity.this,MainActivity.class));
+//                    startActivity(new Intent(FirstShowActivity.this,MainActivity.class));
+                    startActivity(new Intent(FirstShowActivity.this,Main2Activity.class));
                 }
                 finish();
             }

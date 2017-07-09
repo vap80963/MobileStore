@@ -4,7 +4,7 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
 
-    <color name="weboorange">#FF8605</color>
+    <color name="weboblue">#45a8b4</color>
 
     <color name="dkgray">#80808FF0</color>
     <color name="yello">#F8F8FF00</color>
@@ -14,7 +14,7 @@
     <color name="black">#ff000000</color>
     <color name="lightblack">#ff747474</color>
     <color name="blue">#ff0000ff</color>
-    <color name="webo_blue">#4A7BAE</color>
+    <color name="webo_blue">#45a8b4</color>
     <color name="cyan">#ff00ffff</color>
     <color name="gray">#ff888888</color>
     <color name="lightgray">#F7F7F7</color>

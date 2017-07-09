@@ -50,7 +50,6 @@ public class RichTextUtil {
             Matcher emojiMatcher = EMOJI_PATTERN.matcher(spannableString);
 //            setTextColor();
         }
-
         return spannableString;
     }
 

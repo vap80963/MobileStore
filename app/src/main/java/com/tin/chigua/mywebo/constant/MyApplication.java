@@ -16,11 +16,17 @@ public class MyApplication extends Application {
 
     public static String mSdcardDataDir;
     public static int mNetWorkState;
+    private static Context mContext;
 
     @Override
     public void onCreate() {
         super.onCreate();
         initEnv();
+        mContext = getApplicationContext();
+    }
+
+    public static Context getContext(){
+        return mContext;
     }
 
     public void initEnv() {

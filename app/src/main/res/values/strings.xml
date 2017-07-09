@@ -95,7 +95,6 @@
     <string name="share_url">url分享到私信</string>
 
 
-
     <!-- 分享所用的测试数据 -->
     <string name="weibosdk_demo_share_webpage_desc">网页描述：XXX</string>
     <string name="weibosdk_demo_share_music_desc">音乐描述：XXX</string>
@@ -158,7 +157,6 @@
     <string name="goto_send_weibo">进入发微薄页面</string>
 
 
-
     <!-- 统计上传页 -->
     <string name="weibosdk_demo_fragment_title">This is a fragment page</string>
     <string name="weibosdk_demo_log_upload">强制上传</string>
@@ -195,4 +193,5 @@
     <string name="report">转发</string>
     <string name="cancel">取消</string>
     <string name="load_more">正在加载更多数据...</string>
+    <string name="pull_load_more">上拉加载更多...</string>
 </resources>

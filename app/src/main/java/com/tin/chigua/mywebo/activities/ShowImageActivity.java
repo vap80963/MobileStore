@@ -51,8 +51,6 @@ public class ShowImageActivity extends AppCompatActivity {
 //            setImmersePaddingTop();
         }
         init();
-//        mToolbarX = getToolbarX();
-//        mToolbarX.hide();
         mAdPater = new ShowImageViewPagerAdPater(this, mPicUrlBeanList);
         mViewPager.setAdapter(mAdPater);
         mViewPager.setCurrentItem(position);

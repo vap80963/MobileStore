@@ -3,9 +3,9 @@
           package="com.tin.chigua.mywebo">
 
     <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
     <application
         android:name=".constant.MyApplication"
@@ -13,34 +13,39 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
-        >
-        <activity android:name=".activities.FirstShowActivity"
-                  android:theme="@style/AppTheme.FullScreen"
-            >
+        android:theme="@style/AppTheme">
+        <activity
+            android:name=".activities.FirstShowActivity"
+            android:theme="@style/AppTheme.FullScreen">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"></action>
+                <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".activities.MainActivity"
-                  android:configChanges="orientation|screenSize"
-                  android:theme="@style/TranslucentTheme"
-                  android:launchMode="singleInstance"
-                  android:hardwareAccelerated="true"
-            ></activity>
-        <activity android:name=".activities.OauthActivity"></activity>
+        <activity
+            android:name=".activities.MainActivity"
+            android:configChanges="orientation|screenSize"
+            android:hardwareAccelerated="true"
+            android:launchMode="singleTask"
+            android:theme="@style/TranslucentTheme"/>
+        <activity android:name=".activities.OauthActivity"/>
         <activity android:name=".activities.ShowImageActivity"/>
 
         <!-- Glide框架的配置文件 -->
-        <meta-data android:name="com.tin.chigua.mywebo.glide.GlideConfiguration"
-                   android:value="GlideValue"
-                   ></meta-data>
-        <meta-data android:name="com.tin.chigua.mywebo.glide.GlideTagModule"
-                   android:value="GlideModule"
-                   ></meta-data>
+        <meta-data
+            android:name="com.tin.chigua.mywebo.glide.GlideConfiguration"
+            android:value="GlideValue"/>
+        <meta-data
+            android:name="com.tin.chigua.mywebo.glide.GlideTagModule"
+            android:value="GlideModule"/>
 
+        <activity android:name=".activities.Main2Activity"
+                  android:configChanges="orientation|screenSize"
+                  android:hardwareAccelerated="true"
+                  android:launchMode="singleTop"
+            >
+        </activity>
     </application>
 
 </manifest>

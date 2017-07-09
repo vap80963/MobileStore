@@ -42,12 +42,12 @@ public class DrawCenterTextView extends TextView {
             int drawPadding = getCompoundDrawablePadding();  //获得Padding大小
             int textWidth = (int) getPaint().measureText(getText().toString());  //获得文字的宽度
             int bodyWidth = drawWidth + drawPadding + textWidth;  //获得图片和文字整体大小 = 图片宽度 + 图片padding + 文字宽度
-            canvas.translate((getWidth() - bodyWidth) / 2, 0);  //绘制图形，设置绘制的起始位置坐标，(view的宽度 - 图片文字大小) / 2
+            canvas.translate((getWidth() - bodyWidth) / 2, 0);  //绘制图形，设置绘制的起始位置坐标，(view的宽度 - 图片文字总大小) / 2
         }
         Drawable drawableRight = drawable[1];  //获得drawableRight,位于drawable[1]   其他同上
         if(null != drawableRight) {
             setGravity(Gravity.END);
-            int drawWidth = drawableLeft.getIntrinsicWidth();
+            int drawWidth = drawableRight.getIntrinsicWidth();
             int drawPadding = getCompoundDrawablePadding();
             int textWidth = (int) getPaint().measureText(getText().toString());
             int bodyWidth = drawWidth + drawPadding + textWidth;

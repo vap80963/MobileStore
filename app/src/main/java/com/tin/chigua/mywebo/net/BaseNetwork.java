@@ -83,6 +83,10 @@ public abstract class BaseNetwork {
 
     }
 
+    /**
+     * 将一个函数当做参数传递给一个方法，这个函数是一个回调函数
+     * @return
+     */
     public abstract WeiboParameters onPrepare();
 
     public abstract void onFinish(HttpResponse response, boolean success);

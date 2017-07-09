@@ -15,6 +15,7 @@ import com.tin.chigua.mywebo.R;
 import com.tin.chigua.mywebo.activities.ShowImageActivity;
 import com.tin.chigua.mywebo.bean.PicUrlBean;
 import com.tin.chigua.mywebo.constant.MyApplication;
+import com.tin.chigua.mywebo.fragments.FriendsFragment;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -65,15 +66,17 @@ public class GridRclvAdapter extends RecyclerView.Adapter {
         pic.bmiddle_pic = pic.thumbnail_pic.replace("thumbnail","bmiddle");
         String picUrl = pic.bmiddle_pic;
         //加载图片
-        Glide.with(mContext)
+        if(FriendsFragment.isReclvIdle) {
+            Glide.with(mContext)
                     .load(picUrl)
-                    .centerCrop()
+                    .fitCenter()
                     .crossFade()
                     .placeholder(R.color.gray)
 //             .fitCenter()
                     .diskCacheStrategy(DiskCacheStrategy.RESULT)
                     .error(R.drawable.image_error)
                     .into(imageViewHolder.mImageButton);
+        }
         if(null != mOnItemClickListener){
             imageViewHolder.mImageButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -92,7 +95,6 @@ public class GridRclvAdapter extends RecyclerView.Adapter {
         }
 
     }
-
 
     @Override
     public int getItemCount() {

@@ -47,9 +47,9 @@ public class FriendsFragment extends BaseFragment {
     private static List<StatusesBean> mList;
     private static Context mContext;
     private LinearLayoutManager mManager;
-    private int lastVisibleItem = 0;
+    private int lastVisibleItem = 0;  //Adapter的最后一个可见item
     private static int count = 30;
-    public static boolean isReclvIdle = true;
+    public static boolean isReclvIdle = true; //是否处于停止滑动状态
 
     private static WeiboParameters mParameters;
 
@@ -67,6 +67,9 @@ public class FriendsFragment extends BaseFragment {
 
         new BaseNetwork(mContext, url) {
             public WeiboParameters onPrepare() {
+                if(loadMode == StaticUtil.REFRESH_DOWN_SIGN){
+                    mSwipeLayout.setRefreshing(true);
+                }
                 mParameters.put(ParameterKeySet.AUTH_ACCESS_TOKEN, MySharePreferences.getToken(mContext));
                 mParameters.put(ParameterKeySet.PAGE, 1);
                 if(loadMode == StaticUtil.MORE_DOWN_SIGN){
@@ -122,7 +125,7 @@ public class FriendsFragment extends BaseFragment {
             Iterator<StatusesBean> iterator = list.iterator();
             while (iterator.hasNext()){
                 StatusesBean statusesBean = iterator.next();
-                if (statusesBean.id == mList.get(position).id){
+                if (statusesBean.id == mList.get(position).id && iterator.hasNext()){
                     do {
                         statusesBean = iterator.next();
                         mList.add(statusesBean);
@@ -135,12 +138,14 @@ public class FriendsFragment extends BaseFragment {
 
     private static void updateListData(List<StatusesBean> list) {
         if (null != list && list.size() > 0 && mList.size() > 0){
-            int position = 0;
-            long firstId = mList.get(0).id;
-            while(firstId != list.get(position).id){
-                mList.add(position,list.get(position));
-                position++;
-            }
+//            int position = 0;
+//            long firstId = mList.get(0).id;
+//            while(firstId != list.get(position).id){
+//                mList.add(position,list.get(position));
+//                position++;
+//            }
+            mList.clear();
+            mList.addAll(list);
         }else {
             mList.addAll(list);
         }
@@ -154,7 +159,7 @@ public class FriendsFragment extends BaseFragment {
         mList = new ArrayList<>();
         mContext = getActivity();
         mParameters = new WeiboParameters(Constants.APP_KEY);
-        String cacheString =  ConfigCache.getConfigCacheState(UrlUtil.HOME_TIMELINE);
+        String cacheString =  ConfigCache.getConfigCache(UrlUtil.HOME_TIMELINE);
         if (TextUtils.isEmpty(cacheString)) {
             startRequestData(UrlUtil.HOME_TIMELINE, StaticUtil.FIRST_DOWN_SIGN);  //开始请求数据
         }else {
@@ -170,7 +175,7 @@ public class FriendsFragment extends BaseFragment {
         mRecyclerView.setLayoutManager(mManager);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
 //        mRecyclerView.addItemDecoration(new DividerItemDecoration(mContext, DividerItemDecoration.VERTICAL));
-        mAdapter = new CommonRclvAdapter(mContext,mList);
+        mAdapter = new CommonRclvAdapter(mContext,mList);  //使用ApplicationContext，避免内存泄漏
         mAdapter.setOnItemClickLitener(new CommonRclvAdapter.OnItemClickLitener() {
             @Override
             public void onItemClick(View view, int position) {
@@ -212,8 +217,8 @@ public class FriendsFragment extends BaseFragment {
     private void initSwipLayout(View view) {
         mSwipeLayout = (SwipeRefreshLayout) view.findViewById(R.id.home_common_swip_ll);
         mSwipeLayout.setProgressBackgroundColorSchemeColor(getResources().getColor(R.color.white));
-        mSwipeLayout.setColorSchemeColors(getResources().getColor(R.color.weboorange)
-                ,getResources().getColor(R.color.weboorange)
+        mSwipeLayout.setColorSchemeColors(getResources().getColor(R.color.weboblue)
+                ,getResources().getColor(R.color.weboblue)
                 ,getResources().getColor(R.color.white));
         mSwipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override

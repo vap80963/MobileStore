@@ -64,10 +64,13 @@ public class HotFragment extends BaseFragment {
     }
 
 
-    public static void startRequestData(final String url, final int loadMode) {
+    public void startRequestData(final String url, final int loadMode) {
 
         new BaseNetwork(mContext, url) {
             public WeiboParameters onPrepare() {
+                if(loadMode == StaticUtil.REFRESH_DOWN_SIGN){
+                    mSwipeLayout.setRefreshing(true);
+                }
                 mParameters.put(ParameterKeySet.AUTH_ACCESS_TOKEN, MySharePreferences.getToken(mContext));
                 mParameters.put(ParameterKeySet.PAGE, 1);
                 if(loadMode == StaticUtil.MORE_DOWN_SIGN){
@@ -121,7 +124,7 @@ public class HotFragment extends BaseFragment {
             Iterator<StatusesBean> iterator = list.iterator();
             while (iterator.hasNext()){
                 StatusesBean statusesBean = iterator.next();
-                if (statusesBean.id == mList.get(position).id){
+                if (statusesBean.id == mList.get(position).id && iterator.hasNext()){
                     do {
                         statusesBean = iterator.next();
                         mList.add(statusesBean);
@@ -129,15 +132,24 @@ public class HotFragment extends BaseFragment {
                     break;
                 }
             }
+        }else {
+            mList.addAll(list);
         }
+
     }
 
     private static void updateListData(List<StatusesBean> list) {
-        int position = 0;
-        long firstId = HotFragment.mList.get(0).id;
-        while(firstId != list.get(position).id){
-            HotFragment.mList.add(position,list.get(position));
-            position++;
+        if (null != list && list.size() > 0 && mList.size() > 0){
+//            int position = 0;
+//            long firstId = mList.get(0).id;
+//            while(firstId != list.get(position).id){
+//                mList.add(position,list.get(position));
+//                position++;
+//            }
+            mList.clear();
+            mList.addAll(list);
+        }else {
+            mList.addAll(list);
         }
     }
 
@@ -149,7 +161,7 @@ public class HotFragment extends BaseFragment {
         mList = new ArrayList<>();
         mContext = getActivity();
         mParameters = new WeiboParameters(Constants.APP_KEY);
-        String cacheString =  ConfigCache.getConfigCacheState(UrlUtil.PUBLIC_TIMELINE);
+        String cacheString =  ConfigCache.getConfigCache(UrlUtil.PUBLIC_TIMELINE);
         if (TextUtils.isEmpty(cacheString)) {
             startRequestData(UrlUtil.PUBLIC_TIMELINE, StaticUtil.FIRST_DOWN_SIGN);  //开始请求数据
         }else {
@@ -205,8 +217,8 @@ public class HotFragment extends BaseFragment {
     private void initSwipLayout(View view) {
         mSwipeLayout = (SwipeRefreshLayout) view.findViewById(R.id.home_common_swip_ll);
         mSwipeLayout.setProgressBackgroundColorSchemeColor(getResources().getColor(R.color.white));
-        mSwipeLayout.setColorSchemeColors(getResources().getColor(R.color.weboorange)
-                ,getResources().getColor(R.color.weboorange)
+        mSwipeLayout.setColorSchemeColors(getResources().getColor(R.color.weboblue)
+                ,getResources().getColor(R.color.weboblue)
                 ,getResources().getColor(R.color.white));
         mSwipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override

@@ -29,6 +29,15 @@ public class SquareImageView extends ImageButton {
     //将宽和高的测量，巧妙地转换为同样的长度
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(heightMeasureSpec, heightMeasureSpec);
+        setMeasuredDimension(getDefaultSize(0, widthMeasureSpec), getDefaultSize(0, heightMeasureSpec));
+
+        // Children are just made to fill our space.
+        int childWidthSize = getMeasuredWidth();
+        int childHeightSize = getMeasuredHeight();
+
+        //高度和宽度一样
+        heightMeasureSpec = widthMeasureSpec = MeasureSpec.makeMeasureSpec(childHeightSize, MeasureSpec.EXACTLY);
+
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 }

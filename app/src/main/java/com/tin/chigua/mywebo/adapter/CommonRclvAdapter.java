@@ -98,32 +98,30 @@ public class CommonRclvAdapter extends RecyclerView.Adapter {
         return null;
     }
 
-
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, final int position) {
-        if (mList == null){
+        if (mList == null || position < 0 ||viewHolder == null){
             return;
         }
         if (viewHolder instanceof MyItemViewHolder){
             final MyItemViewHolder holder = (MyItemViewHolder) viewHolder;
-            StatusesBean statuses = mList.get(position);
+            final StatusesBean statuses = mList.get(holder.getAdapterPosition());
+            holder.setIsRecyclable(true);
             /**
              * 加载微博发布者的头像
              */
             final Uri uri = Uri.parse(statuses.user.avatar_large);
-//            if(FriendsFragment.isReclvIdle){
-                Glide.with(mContext)
-                        .load(uri)
+            Glide.with(mContext)
+                    .load(uri)
 //                    .asBitmap()
-                        .transform(new CircleTransform(mContext))
-                        .centerCrop()
+                    .transform(new CircleTransform(mContext))
+                    .centerCrop()
 //                    .placeholder(R.color.gray)  //
-                        .crossFade()
-                        .diskCacheStrategy(DiskCacheStrategy.RESULT)
-                        .error(R.drawable.image_error)
-                        .priority(Priority.HIGH)
-                        .into(holder.mIcon);
-//            }
+                    .crossFade()
+                    .diskCacheStrategy(DiskCacheStrategy.RESULT)
+                    .error(R.drawable.image_error)
+                    .priority(Priority.HIGH)
+                    .into(holder.mIcon);
             //同样可以实现加载成为圆形图片
 //                    .into(new BitmapImageViewTarget(holder.mIcon){
 //                        @Override
@@ -160,27 +158,7 @@ public class CommonRclvAdapter extends RecyclerView.Adapter {
                     WeiboPageUtils.getInstance(mContext,authInfo).startWeiboDetailPage(mblogid,uid,useWeb);
                 }
             });
-            holder.mContent.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    TypedValue typedValue = new TypedValue();
-                    mContext.getTheme().resolveAttribute(R.attr.selectableItemBackground, typedValue, true);
-                    switch (event.getAction()){
-                        case MotionEvent.ACTION_DOWN:
-                            holder.mItemRclvLl.setBackgroundResource(typedValue.resourceId);
-                            break;
-                        case MotionEvent.ACTION_MOVE:
-                            holder.mItemRclvLl.setBackgroundColor(Color.WHITE);
-                            break;
-                        case MotionEvent.ACTION_UP:
-                            holder.mItemRclvLl.setBackgroundColor(Color.WHITE);
-                            break;
-                        default:
-                            break;
-                    }
-                    return false;
-                }
-            });
+            holder.mItemRclvLl.setTag(holder.getAdapterPosition());
             holder.mItemRclvLl.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
@@ -188,7 +166,9 @@ public class CommonRclvAdapter extends RecyclerView.Adapter {
                     mContext.getTheme().resolveAttribute(R.attr.selectableItemBackground, typedValue, true);
                     switch (event.getAction()){
                         case MotionEvent.ACTION_DOWN:
-                            holder.mItemRclvLl.setBackgroundResource(typedValue.resourceId);
+                            if((int)holder.mItemRclvLl.getTag() == holder.getAdapterPosition()){
+                                holder.mItemRclvLl.setBackgroundResource(typedValue.resourceId);
+                            }
                             break;
                         case MotionEvent.ACTION_MOVE:
                             holder.mItemRclvLl.setBackgroundColor(Color.WHITE);
@@ -205,9 +185,8 @@ public class CommonRclvAdapter extends RecyclerView.Adapter {
             holder.mUserName.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    StatusesBean statusesBean = mList.get(holder.getLayoutPosition());
-                    uid = statusesBean.idstr;
-                    mblogid = statusesBean.mid;
+                    uid = statuses.idstr;
+                    mblogid = statuses.mid;
 //                    WeiboPageUtils.getInstance(mContext,authInfo).startUserMainPage(uid,useWeb);
                     WeiboPageUtils.getInstance(mContext,authInfo).gotoMyProfile(useWeb);
                 }
@@ -215,9 +194,8 @@ public class CommonRclvAdapter extends RecyclerView.Adapter {
             holder.mIcon.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    StatusesBean statusesBean = mList.get(holder.getLayoutPosition());
-                    uid = statusesBean.idstr;
-                    mblogid = statusesBean.mid;
+                    uid = statuses.idstr;
+                    mblogid = statuses.mid;
                     WeiboPageUtils.getInstance(mContext,authInfo).startUserMainPage(uid,useWeb);
                 }
             });
@@ -227,20 +205,21 @@ public class CommonRclvAdapter extends RecyclerView.Adapter {
             holder.mContent.setText(RichTextUtil.getSpanString(mContext,statuses.text));
             holder.mContent.setMovementMethod(LinkMovementMethod.getInstance());
             holder.mTime.setText(TimeFormatUtils.parseToYYMMDD(statuses.created_at));
-            String source = Html.fromHtml(statuses.source).toString();
-            if(!source.equals("")){
-                holder.mSource.setText("来自" + source);
-            }
+            String source = Html.fromHtml(mList.get(position).source).toString();
+            holder.mSource.setTag(source);
+//            if(!Html.fromHtml(mList.get(position).source).toString().equals("")){
+                holder.mSource.setText("来自" + Html.fromHtml(statuses.source).toString());
+//            }
             holder.mUserName.setText(statuses.user.name);
-            if(statuses.reposts_count > 0){
+//            if(statuses.reposts_count > 0){
                 holder.mReportsCount.setText("" + statuses.reposts_count);
-            }
-            if (statuses.comments_count > 0){
+//            }
+//            if (statuses.comments_count > 0){
                 holder.mCommentsCount.setText("" + statuses.comments_count);
-            }
-            if (statuses.attitudes_count > 0){
+//            }
+//            if (statuses.attitudes_count > 0){
                 holder.mAttitudesCount.setText("" + statuses.attitudes_count);
-            }
+//            }
             /**
              * 以下为加载照片部分
              */
@@ -318,7 +297,7 @@ public class CommonRclvAdapter extends RecyclerView.Adapter {
             switch (load_more_status){
                 case PULL_LOAD_MORE:
                     footerViewHolder.foot_view_ll.setVisibility(View.VISIBLE);
-                    footerViewHolder.foot_view_item_tv.setText("上拉加载更多...");
+                    footerViewHolder.foot_view_item_tv.setText("松手加载更多...");
                     break;
                 case LOADING_MORE:
                     footerViewHolder.foot_view_ll.setVisibility(View.VISIBLE);

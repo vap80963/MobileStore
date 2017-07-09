@@ -18,7 +18,7 @@ import java.io.IOException;
 public class ConfigCache {
 
     private static final int CONFIG_CACHE_MOBILE_TIME_OUT = 1000 * 60 * 60 * 24; //移动网络下超过24小时更新
-    private static final int CONFIG_CACHE_WIFI_TIME_OUT = 1000 * 60 * 60 * 10; //移动网络下超过10小时更新
+    private static final int CONFIG_CACHE_WIFI_TIME_OUT = 1000 * 60 * 60 * 10; //WIFI网络下超过10小时更新
 
     public static final String STATUS_BEAN = "statuses_bean";
     private static final String TAG = "ConfigCache";
@@ -31,7 +31,7 @@ public class ConfigCache {
 
         String result = null;
         File file = new File(Environment.getExternalStorageDirectory() + "/" + getCacheDecodeString(url));
-        Log.e("filePath = ",file.getAbsolutePath());
+//        Log.e("filePath = ",file.getAbsolutePath());
         if(file.exists() && file.isFile()){
             long expiredTime = System.currentTimeMillis() - file.lastModified();
             int networkState = MyApplication.mNetWorkState;
@@ -57,12 +57,10 @@ public class ConfigCache {
 
     public static void setUrlCache(JsonObject data, String url) {
         File file = new File(Environment.getExternalStorageDirectory() + "/" + getCacheDecodeString(url));
-        Log.e("filePath = ?",file.getAbsolutePath());
+//        Log.e("filePath = ?",file.getAbsolutePath());
         try {
             //创建缓存数据到磁盘，就是创建文件
             FileUtils.writeTextFile(file, data.toString());
-//            Log.e("jsonObject = ", data.get(STATUS_BEAN).toString());
-//            Log.e("jsonObject = ", data.toString() + "");
         } catch (IOException e) {
             Log.e("Config", "write " + file.getAbsolutePath() + " data failed!");
             e.printStackTrace();
@@ -80,14 +78,14 @@ public class ConfigCache {
     }
 
     //返回获取缓存文件结果
-    public static String  getConfigCacheState(String url) {
+    public static String getConfigCache(String url) {
         if (url == null){
             Log.e("error_url","url的值为空");
             return null;
         }
         String cacheConfigUrl = ConfigCache.getCacheDecodeString(url);
         String cacheString = ConfigCache.getUrlCache(cacheConfigUrl);
-        Log.e(TAG,"cacheString = " + cacheString);
+//        Log.e(TAG,"cacheString = " + cacheString);
         if (null != cacheString){
             Log.e(TAG,"我是用通过本地数据来获取数据的");
             return cacheString;

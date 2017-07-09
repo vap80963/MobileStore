@@ -16,4 +16,7 @@
         >
     </com.tin.chigua.mywebo.view.MyRecyclerView>
 
+    <!-- android:descendantFocusability="afterDescendants"
+        关键代码1，ViewGroup在子控件不需要焦点时才获取焦点 -->
+
 </android.support.v4.widget.SwipeRefreshLayout>

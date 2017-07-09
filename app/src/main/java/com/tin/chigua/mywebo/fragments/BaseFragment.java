@@ -9,7 +9,7 @@ import com.tin.chigua.mywebo.R;
  * Created by hasee on 5/5/2017.
  */
 
-public class BaseFragment extends Fragment {
+public abstract class BaseFragment extends Fragment {
 
     @Override
     public void startActivity(Intent intent) {
@@ -22,4 +22,8 @@ public class BaseFragment extends Fragment {
         getActivity().startActivityForResult(intent,requestCode);
         getActivity().overridePendingTransition(R.anim.anim_in_right_left,R.anim.anim_out_right_left);
     }
+
+    public abstract void moveRecylvToPosition(int position);
+
+    public abstract void startRequestData(final String url, final int loadMode);
 }

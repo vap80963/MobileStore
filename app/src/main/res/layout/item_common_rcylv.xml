@@ -12,7 +12,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:clickable="true"
         android:background="@color/white"
         >
 
@@ -27,6 +26,7 @@
                 android:id="@+id/item_common_rcyl_user_icon"
                 android:layout_width="45dp"
                 android:layout_height="45dp"
+                android:src="@drawable/default_user"
                 />
 
             <LinearLayout
@@ -42,7 +42,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/user_name"
-                    android:textColor="@color/weboorange"
+                    android:textColor="@color/weboblue"
                     android:clickable="true"
                     android:textSize="16dp"
                     />
@@ -66,7 +66,7 @@
                         android:id="@+id/item_common_rcyl_user_source"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="来自微博客户端webo"
+                        android:text="来自微博客户端"
                         android:textSize="@dimen/text_10"
                         android:layout_marginLeft="@dimen/size_8"
                         android:textColor="@color/gray"
@@ -85,7 +85,17 @@
             android:paddingLeft="@dimen/size_12"
             android:paddingRight="@dimen/size_12"
             android:paddingBottom="@dimen/size_12"
+            android:duplicateParentState="true"
+            android:clickable="true"
             >
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/item_common_rcyl_user_content_rcylv"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone"
+                android:descendantFocusability="beforeDescendants"
+                />
 
             <TextView
                 android:id="@+id/item_common_rcyl_user_content"
@@ -93,15 +103,7 @@
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/size_16"
                 android:textColor="@color/black"
-                android:clickable="true"
                 android:text="我是这个用户发布的微博，你想看我发的其他微博吗？点进来吧，点进来就让你嘿嘿嘿哦"
-                />
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/item_common_rcyl_user_content_rcylv"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:visibility="gone"
                 />
 
         </LinearLayout>
@@ -132,6 +134,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:visibility="gone"
+                android:descendantFocusability="afterDescendants"
                 />
 
         </LinearLayout>
@@ -142,14 +145,14 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="horizontal"
+            android:clickable="false"
             >
 
             <LinearLayout
                 android:id="@+id/item_common_rcyl_user_report_ll"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:layout_margin="@dimen/size_8"
                 android:clickable="true"
                 android:gravity="center_vertical|center_horizontal"
                 >
@@ -179,8 +182,7 @@
             <LinearLayout
                 android:id="@+id/item_common_rcyl_user_comment_ll"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/size_8"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:clickable="true"
                 android:gravity="center_vertical|center_horizontal"
@@ -211,9 +213,8 @@
             <LinearLayout
                 android:id="@+id/item_common_rcyl_user_like_ll"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="35dp"
                 android:layout_weight="1"
-                android:layout_margin="@dimen/size_8"
                 android:clickable="true"
                 android:gravity="center_vertical|center_horizontal"
                 >
@@ -234,8 +235,6 @@
         </LinearLayout>
 
     </LinearLayout>
-
-    <include layout="@layout/common_divider_line"></include>
 
     <View
         android:layout_width="match_parent"

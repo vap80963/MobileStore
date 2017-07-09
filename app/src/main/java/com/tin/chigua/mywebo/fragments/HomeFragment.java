@@ -17,8 +17,9 @@ import android.widget.TextView;
 
 import com.tin.chigua.mywebo.R;
 import com.tin.chigua.mywebo.adapter.HomePagerAdapter;
+import com.tin.chigua.mywebo.constant.StaticUtil;
+import com.tin.chigua.mywebo.constant.UrlUtil;
 import com.tin.chigua.mywebo.ui.ToolbarX;
-import com.tin.chigua.mywebo.utils.LUtils;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -32,6 +33,8 @@ import static android.R.attr.offset;
 
 public class HomeFragment extends BaseFragment {
 
+    private Class fragmentArray[] = new Class[]{FriendsFragment.class, HotFragment.class};
+    private String urlArray[] = {UrlUtil.HOME_TIMELINE,UrlUtil.PUBLIC_TIMELINE};
     public static ViewPager mViewPager;
     private ToolbarX mToolbarX;
 
@@ -92,27 +95,6 @@ public class HomeFragment extends BaseFragment {
         mFriendsTv.setOnClickListener(new MyOnClickListener(0));
         mHotTv.setOnClickListener(new MyOnClickListener(1));
 
-        mLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int currentTime = (int) Calendar.getInstance().getTimeInMillis();
-                if (firstClickTime == 0){
-                    firstClickTime = (int) Calendar.getInstance().getTimeInMillis();
-                }
-                int index = currentTime - firstClickTime;
-                LUtils.logE(getActivity(),"currentTime = " + currentTime + "firstTime = " + firstClickTime);
-                if (index <= 300 && index > 0 && firstClickTime != 0){
-                    LUtils.logE(getActivity(),"currentTime = " + currentTime + "firstTime = " + firstClickTime);
-                    LUtils.toastShort(getActivity(),"你双击了RelativeLayout");
-                    LUtils.logE(getContext(),"index = " + index);
-                    firstClickTime = 0;
-                }else if (index > 300){
-                    LUtils.logE(getContext(),"index = " + index);
-                    firstClickTime = 0;
-                }
-
-            }
-        });
     }
 
     private void initViewPager(View view) {
@@ -138,6 +120,16 @@ public class HomeFragment extends BaseFragment {
         Matrix matrix = new Matrix();
         matrix.postTranslate((float) offset, 0);
         mImgvButtom.setImageMatrix(matrix);
+    }
+
+    @Override
+    public void moveRecylvToPosition(int position) {
+
+    }
+
+    @Override
+    public void startRequestData(String url, int loadMode) {
+
     }
 
     class MyPageChangeListener implements ViewPager.OnPageChangeListener{
@@ -195,7 +187,29 @@ public class HomeFragment extends BaseFragment {
 
         @Override
         public void onClick(View v) {
-            mViewPager.setCurrentItem(mId);
+            if(mViewPager.getCurrentItem() != mId){
+                mViewPager.setCurrentItem(mId);
+                return;
+            }
+            int currentTime = (int) Calendar.getInstance().getTimeInMillis();
+            if (firstClickTime == 0 || currentTime - firstClickTime > 300){
+                firstClickTime = (int) Calendar.getInstance().getTimeInMillis();
+            }
+            int index = currentTime - firstClickTime;
+            if (index <= 300 && index > 0 && firstClickTime != 0) {
+                try {
+                    BaseFragment fragment = (BaseFragment) fragmentArray[mId].newInstance();
+                    fragment.moveRecylvToPosition(0);
+                    fragment.startRequestData(urlArray[mId], StaticUtil.REFRESH_DOWN_SIGN);
+                } catch (java.lang.InstantiationException e) {
+                    e.printStackTrace();
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+                firstClickTime = 0;
+            }else if(index > 300){
+                firstClickTime = 0;
+            }
         }
     }
 

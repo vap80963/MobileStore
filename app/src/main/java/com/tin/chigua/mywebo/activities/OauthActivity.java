@@ -158,7 +158,8 @@ public class OauthActivity extends BaseActivity {
 //                        updateTokenView(false);
                         AccessTokenKeeper.writeAccessToken(OauthActivity.this,mAuthToken);
                         MySharePreferences.writeToSP(OauthActivity.this,mAuthToken);
-                        startActivity(new Intent(OauthActivity.this,MainActivity.class));
+//                        startActivity(new Intent(OauthActivity.this,MainActivity.class));
+                        startActivity(new Intent(OauthActivity.this,Main2Activity.class));
                         LUtils.toastShort(OauthActivity.this,"授权成功,即将进入微博界面");
 //                        LUtils.logE(OauthActivity.this,mAuthToken+"");
                         finish();
