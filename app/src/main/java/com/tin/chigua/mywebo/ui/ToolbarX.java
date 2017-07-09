@@ -4,7 +4,10 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.RelativeLayout;
+
+import com.tin.chigua.mywebo.R;
 
 /**
  * Created by hasee on 5/6/2017.
@@ -22,9 +25,11 @@ public class ToolbarX {
         mActivity = activity;
         mActivity.setSupportActionBar(mToolbar);
         mActionBar = mActivity.getSupportActionBar();
+        rlCustom = (RelativeLayout) mToolbar.findViewById(R.id.rlCustom);
     }
 
     public ToolbarX setTitle(String title){
+        mActionBar.setDisplayShowTitleEnabled(true);
         mActionBar.setTitle(title);
         return this;
     }
@@ -61,6 +66,10 @@ public class ToolbarX {
     public ToolbarX show(){
         mActionBar.show();
         return this;
+    }
+
+    public ViewGroup getCustomView(){
+        return rlCustom;
     }
 
     public ToolbarX setCustomeView(View view){

@@ -4,11 +4,19 @@ import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.graphics.Matrix;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -31,12 +39,15 @@ import static android.R.attr.offset;
  * Created by hasee on 5/5/2017.
  */
 
-public class HomeFragment extends BaseFragment {
+public class HomeFragment extends BaseFragment implements NavigationView.OnNavigationItemSelectedListener{
 
     private Class fragmentArray[] = new Class[]{FriendsFragment.class, HotFragment.class};
     private String urlArray[] = {UrlUtil.HOME_TIMELINE,UrlUtil.PUBLIC_TIMELINE};
     public static ViewPager mViewPager;
     private ToolbarX mToolbarX;
+    private Toolbar mToolbar;
+    private DrawerLayout drawer;
+
 
     private RelativeLayout mLayout;
     private TextView mFriendsTv;
@@ -60,23 +71,14 @@ public class HomeFragment extends BaseFragment {
         mFragmentList  = new ArrayList<>();
         mFragmentList.add(FriendsFragment.newInstance());
         mFragmentList.add(HotFragment.newInstance());
-//        init();
-    }
-
-    private void init() {
-
-//        HomeFragment fragment = new HomeFragment();
-//        Bundle args = this.getArguments();
-//        mToolbarX = (ToolbarX) args.getSerializable("toolbarX");
-//        View v =
-//        mToolbarX.setCustomeView()
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         if(view == null){
-            view = inflater.inflate(R.layout.fragment_home,container,false);
+            view = inflater.inflate(R.layout.fragment_home1,container,false);
+            init(view);
             initWidth(view);
             initTextView(view);
             initViewPager(view);
@@ -86,6 +88,20 @@ public class HomeFragment extends BaseFragment {
             parent.removeView(view);
         }
         return view;
+    }
+
+    private void init(View v) {
+        mToolbar = (Toolbar) v.findViewById(R.id.home_common_toolbar);
+        ((AppCompatActivity)getActivity()).setSupportActionBar(mToolbar);
+        drawer = (DrawerLayout) v.findViewById(R.id.common_drawerlayout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                getActivity(), drawer, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.setDrawerListener(toggle);
+
+        toggle.syncState();
+
+        NavigationView navigationView = (NavigationView) v.findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
     }
 
     private void initTextView(View view) {
@@ -175,6 +191,29 @@ public class HomeFragment extends BaseFragment {
         public void onPageScrollStateChanged(int state) {
 
         }
+    }
+
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        // Handle navigation view item clicks here.
+        int id = item.getItemId();
+
+        if (id == R.id.nav_camera) {
+            // Handle the camera action
+        } else if (id == R.id.nav_gallery) {
+
+        } else if (id == R.id.nav_slideshow) {
+
+        } else if (id == R.id.nav_manage) {
+
+        } else if (id == R.id.nav_share) {
+
+        } else if (id == R.id.nav_send) {
+
+        }
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
     }
 
     class MyOnClickListener implements View.OnClickListener{

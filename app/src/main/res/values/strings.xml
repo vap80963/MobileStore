@@ -7,6 +7,11 @@
     <string name="password">密码</string>
     <string name="username">用户名</string>
 
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+
 
     <!-- 功能列表 -->
     <string name="weibosdk_demo_feature_oauth">微博授权</string>
