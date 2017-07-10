@@ -1,12 +1,9 @@
 package com.tin.chigua.mywebo.view;
 
 import android.content.Context;
-import android.content.res.TypedArray;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
-
-import com.tin.chigua.mywebo.R;
 
 /**
  * Created by hasee on 6/4/2017.
@@ -28,9 +25,9 @@ public class MyRecyclerView extends RecyclerView {
     public MyRecyclerView(Context context, @Nullable AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
 //        init(context);
-        TypedArray a = context.obtainStyledAttributes(attrs,R.styleable.MyRecyclerView);
-        default_size = a.getDimension(R.styleable.MyRecyclerView_default_size,100);
-        a.recycle();
+//        TypedArray a = context.obtainStyledAttributes(attrs,R.styleable.MyRecyclerView);
+//        default_size = a.getDimension(R.styleable.MyRecyclerView_default_size,100);
+//        a.recycle();
     }
 
     @Override

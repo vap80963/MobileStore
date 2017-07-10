@@ -1,4 +1,4 @@
-package com.tin.chigua.mywebo.glide;
+package com.tin.chigua.mywebo.imageloader;
 
 import android.content.Context;
 

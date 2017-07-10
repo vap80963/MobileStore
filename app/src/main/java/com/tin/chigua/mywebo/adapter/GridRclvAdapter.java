@@ -9,13 +9,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.tin.chigua.mywebo.R;
 import com.tin.chigua.mywebo.activities.ShowImageActivity;
 import com.tin.chigua.mywebo.bean.PicUrlBean;
 import com.tin.chigua.mywebo.constant.MyApplication;
 import com.tin.chigua.mywebo.fragments.FriendsFragment;
+import com.tin.chigua.mywebo.imageloader.CommonImageLoaderUtil;
+import com.tin.chigua.mywebo.imageloader.ImageLoader;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -26,6 +26,9 @@ import java.util.List;
  */
 
 public class GridRclvAdapter extends RecyclerView.Adapter {
+
+    private static final int RCLV_ITEM = 1110;
+    private static final int SINGLE_ITEM = 1111;
 
     private List<PicUrlBean> mPicUrlBeanList = new ArrayList<>();
     private Context mContext;
@@ -51,34 +54,56 @@ public class GridRclvAdapter extends RecyclerView.Adapter {
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_img_rcylv,parent,false);
-        return new MyImageViewHolder(view);
+        View view = null;
+        switch (viewType){
+            case RCLV_ITEM:
+                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_img_rcylv,parent,false);
+                return new MyImageRclvViewHolder(view);
+            case SINGLE_ITEM:
+                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_img_single,parent,false);
+                return new MyImageSingleViewHolder(view);
+            default:
+                break;
+        }
+        return null;
     }
 
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
-        MyImageViewHolder imageViewHolder = null;
-        if(holder instanceof MyImageViewHolder){
-            imageViewHolder = (MyImageViewHolder) holder;
-        }
+
         final PicUrlBean pic = mPicUrlBeanList.get(position);
         pic.original_pic = pic.thumbnail_pic.replace("thumbnail","large");
         pic.bmiddle_pic = pic.thumbnail_pic.replace("thumbnail","bmiddle");
         String picUrl = pic.bmiddle_pic;
+
+        MyImageRclvViewHolder imageViewHolder = null;
+        MyImageSingleViewHolder singleViewHolder = null;
+        if(holder instanceof MyImageRclvViewHolder){
+            imageViewHolder = (MyImageRclvViewHolder) holder;
+            loadImage(imageViewHolder.mImageButton,picUrl);
+            setOnClickListener(imageViewHolder.mImageButton,position);
+        }else if (holder instanceof MyImageSingleViewHolder){
+            singleViewHolder = (MyImageSingleViewHolder) holder;
+            loadImage(singleViewHolder.mImageButton,picUrl);
+            setOnClickListener(singleViewHolder.mImageButton,position);
+        }
+    }
+
+    private void loadImage(ImageButton imageButton, String picUrl){
         //加载图片
         if(FriendsFragment.isReclvIdle) {
-            Glide.with(mContext)
-                    .load(picUrl)
-                    .fitCenter()
-                    .crossFade()
-                    .placeholder(R.color.gray)
-//             .fitCenter()
-                    .diskCacheStrategy(DiskCacheStrategy.RESULT)
-                    .error(R.drawable.ic_icon_image_error)
-                    .into(imageViewHolder.mImageButton);
+//            Glide.with(mContext).load(picUrl).fitCenter().crossFade().placeholder(R.color.gray)
+//                    .diskCacheStrategy(DiskCacheStrategy.RESULT).error(R.drawable.ic_icon_image_error)
+//                    .into(imageViewHolder.mImageButton);
+            ImageLoader imageLoader = new ImageLoader.Builder().url(picUrl)
+                    .imgView(imageButton).build();
+            CommonImageLoaderUtil.getInstance().loadImage(mContext,imageLoader);
         }
+    }
+
+    private void setOnClickListener(ImageButton imageButton,final int position){
         if(null != mOnItemClickListener){
-            imageViewHolder.mImageButton.setOnClickListener(new View.OnClickListener() {
+            imageButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(mContext, ShowImageActivity.class);
@@ -93,7 +118,16 @@ public class GridRclvAdapter extends RecyclerView.Adapter {
                 }
             });
         }
+    }
 
+    @Override
+    public int getItemViewType(int position) {
+        if(mPicUrlBeanList.size() == 1){
+            return SINGLE_ITEM;
+        }else if (mPicUrlBeanList.size() > 1){
+            return RCLV_ITEM;
+        }
+        return 0;
     }
 
     @Override
@@ -101,11 +135,22 @@ public class GridRclvAdapter extends RecyclerView.Adapter {
         return mPicUrlBeanList.size();
     }
 
-    class MyImageViewHolder extends RecyclerView.ViewHolder{
+    class MyImageSingleViewHolder extends RecyclerView.ViewHolder{
 
         private ImageButton mImageButton;
 
-        public MyImageViewHolder(View itemView) {
+        public MyImageSingleViewHolder(View itemView) {
+            super(itemView);
+            mImageButton = (ImageButton) itemView.findViewById(R.id.item_img_single_imgv);
+
+        }
+    }
+
+    class MyImageRclvViewHolder extends RecyclerView.ViewHolder{
+
+        private ImageButton mImageButton;
+
+        public MyImageRclvViewHolder(View itemView) {
             super(itemView);
             mImageButton = (ImageButton) itemView.findViewById(R.id.item_img_rcylv_img);
 

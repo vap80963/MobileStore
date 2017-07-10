@@ -34,10 +34,10 @@
 
         <!-- Glide框架的配置文件 -->
         <meta-data
-            android:name="com.tin.chigua.mywebo.glide.GlideConfiguration"
+            android:name="com.tin.chigua.mywebo.imageloader.GlideConfiguration"
             android:value="GlideValue"/>
         <meta-data
-            android:name="com.tin.chigua.mywebo.glide.GlideTagModule"
+            android:name="com.tin.chigua.mywebo.imageloader.GlideTagModule"
             android:value="GlideModule"/>
 
         <activity android:name=".activities.Main2Activity"

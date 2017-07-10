@@ -5,6 +5,8 @@
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:clickable="true"
+              android:paddingLeft="@dimen/size_8"
+              android:paddingRight="@dimen/size_8"
     >
 
     <View
@@ -21,7 +23,6 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:background="@drawable/corner_5dp"
-        android:elevation="@dimen/size_8"
         >
 
         <LinearLayout
@@ -98,14 +99,6 @@
             android:clickable="true"
             >
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/item_common_rcyl_user_content_rcylv"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:visibility="gone"
-                android:descendantFocusability="beforeDescendants"
-                />
-
             <TextView
                 android:id="@+id/item_common_rcyl_user_content"
                 android:layout_width="match_parent"
@@ -113,6 +106,14 @@
                 android:textSize="@dimen/size_16"
                 android:textColor="@color/black"
                 android:text="我是这个用户发布的微博，你想看我发的其他微博吗？点进来吧，点进来就让你嘿嘿嘿哦"
+                />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/item_common_rcyl_user_content_rcylv"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone"
+                android:descendantFocusability="afterDescendants"
                 />
 
         </LinearLayout>
@@ -144,6 +145,7 @@
                 android:layout_height="match_parent"
                 android:visibility="gone"
                 android:descendantFocusability="afterDescendants"
+                android:focusable="false"
                 />
 
         </LinearLayout>

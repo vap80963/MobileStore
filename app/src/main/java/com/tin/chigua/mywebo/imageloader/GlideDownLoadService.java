@@ -1,4 +1,4 @@
-package com.tin.chigua.mywebo.glide;
+package com.tin.chigua.mywebo.imageloader;
 
 /**
  * Created by hasee on 6/17/2017.

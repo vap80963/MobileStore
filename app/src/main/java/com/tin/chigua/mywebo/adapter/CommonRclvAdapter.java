@@ -1,9 +1,11 @@
 package com.tin.chigua.mywebo.adapter;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Handler;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -22,13 +24,14 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.Priority;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.sina.weibo.sdk.auth.AuthInfo;
 import com.sina.weibo.sdk.web.WeiboPageUtils;
 import com.tin.chigua.mywebo.R;
 import com.tin.chigua.mywebo.bean.PicUrlBean;
 import com.tin.chigua.mywebo.bean.StatusesBean;
 import com.tin.chigua.mywebo.constant.Constants;
-import com.tin.chigua.mywebo.utils.CircleTransform;
 import com.tin.chigua.mywebo.utils.RichTextUtil;
 import com.tin.chigua.mywebo.utils.TimeFormatUtils;
 
@@ -113,30 +116,31 @@ public class CommonRclvAdapter extends RecyclerView.Adapter {
             final Uri uri = Uri.parse(statuses.user.avatar_large);
             Glide.with(mContext)
                     .load(uri)
-//                    .asBitmap()
-                    .transform(new CircleTransform(mContext))
+                    .asBitmap()
+//                    .transform(new CircleTransform(mContext))
                     .centerCrop()
 //                    .placeholder(R.color.gray)  //
                     .crossFade()
                     .diskCacheStrategy(DiskCacheStrategy.RESULT)
                     .error(R.drawable.ic_icon_image_error)
                     .priority(Priority.HIGH)
-                    .into(holder.mIcon);
+//                    .into(holder.mIcon);
             //同样可以实现加载成为圆形图片
-//                    .into(new BitmapImageViewTarget(holder.mIcon){
-//                        @Override
-//                        protected void setResource(Bitmap resource) {
-//                            RoundedBitmapDrawable drawable = RoundedBitmapDrawableFactory.create(mContext.getResources(),resource);
-//                            drawable.setCircular(true);
-//                            holder.mIcon.setImageDrawable(drawable);
-//                        }
-//
-//                        @Override
-//                        public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-//                            super.onResourceReady(resource, glideAnimation);
-////                            handlerDataChange(position);
-//                        }
-//                    });
+                    .into(new BitmapImageViewTarget(holder.mIcon){
+                        @Override
+                        protected void setResource(Bitmap resource) {
+
+                            RoundedBitmapDrawable drawable = RoundedBitmapDrawableFactory.create(mContext.getResources(),resource);
+                            drawable.setCircular(true);
+                            holder.mIcon.setImageDrawable(drawable);
+                        }
+
+                        @Override
+                        public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                            super.onResourceReady(resource, glideAnimation);
+//                            handlerDataChange(position);
+                        }
+                    });
             authInfo = new AuthInfo(mContext, Constants.APP_KEY, Constants.REDIRECT_URL, Constants.SCOPE);
             holder.mItemRclvLl.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -164,7 +168,6 @@ public class CommonRclvAdapter extends RecyclerView.Adapter {
                     TypedValue typedValue = new TypedValue();
                     mContext.getTheme().resolveAttribute(R.attr.selectableItemBackground, typedValue, true);
                     holder.mItemRclvLl.setTag(holder.getLayoutPosition());
-                    Drawable drawable = mContext.getResources().getDrawable(R.drawable.corner_5dp);
                     switch (event.getAction()){
                         case MotionEvent.ACTION_DOWN:
                             if ((int)holder.mItemRclvLl.getTag() == holder.getLayoutPosition()) {
@@ -177,6 +180,9 @@ public class CommonRclvAdapter extends RecyclerView.Adapter {
                             holder.mItemRclvLl.setBackgroundResource(R.drawable.corner_5dp);
                             break;
                         case MotionEvent.ACTION_UP:
+                            holder.mItemRclvLl.setBackgroundResource(R.drawable.corner_5dp);
+                            break;
+                        case MotionEvent.ACTION_CANCEL:
                             holder.mItemRclvLl.setBackgroundResource(R.drawable.corner_5dp);
                             break;
                         default:
@@ -208,11 +214,11 @@ public class CommonRclvAdapter extends RecyclerView.Adapter {
             holder.mContent.setText(RichTextUtil.getSpanString(mContext,statuses.text));
             holder.mContent.setMovementMethod(LinkMovementMethod.getInstance());
             holder.mTime.setText(TimeFormatUtils.parseToYYMMDD(statuses.created_at));
-            String source = Html.fromHtml(mList.get(position).source).toString();
+            String source = Html.fromHtml(statuses.source).toString();
             holder.mSource.setTag(source);
-//            if(!Html.fromHtml(mList.get(position).source).toString().equals("")){
+            if(!source.equals("")){
                 holder.mSource.setText("来自" + Html.fromHtml(statuses.source).toString());
-//            }
+            }
             holder.mUserName.setText(statuses.user.name);
 //            if(statuses.reposts_count > 0){
                 holder.mReportsCount.setText("" + statuses.reposts_count);
