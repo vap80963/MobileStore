@@ -25,12 +25,15 @@ public class RichTextUtil {
     private static final int MENTION_CODE = 1;
     private static final int TOPIC_CODE = 2;
     private static final int EMOJI_CODE = 3;
+    private static final int FULL_TEXT_CODE = 3;
+
 
     private static String regex = "(http://|www[.])[-A-Za-z0-9+&@#/%?=~_()|!:,.;]*[-A-Za-z0-9+&@#/%=~_()|]";
     private static final Pattern WEB_PATTERN = Pattern.compile(regex);
     private static final Pattern MENTION_PATTERN = Pattern.compile("@[\\u4e00-\\u9fa5a-zA-Z0-9_-]+");
     private static final Pattern TOPIC_PATTERN = Pattern.compile("#[\\u4e00-\\u9fa5a-zA-Z0-9_-]+#");
     private static final Pattern EMOJI_PATTERN = Pattern.compile("\\[[\\w\\u4e00-\\u9fa5\\w]+\\]");
+    private static final Pattern FULL_TEXT_PATERN = Pattern.compile("全文");
 
 
     public static SpannableString getSpanString(Context context,String text){
@@ -49,6 +52,9 @@ public class RichTextUtil {
 
             Matcher emojiMatcher = EMOJI_PATTERN.matcher(spannableString);
 //            setTextColor();
+
+            Matcher fullTextMatcher = FULL_TEXT_PATERN.matcher(spannableString);
+            setTextColor(context,spannableString,topicMathcer,linkColor,FULL_TEXT_CODE);
         }
         return spannableString;
     }

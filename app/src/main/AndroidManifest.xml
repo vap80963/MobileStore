@@ -31,6 +31,8 @@
             android:theme="@style/TranslucentTheme"/>
         <activity android:name=".activities.OauthActivity"/>
         <activity android:name=".activities.ShowImageActivity"/>
+        <activity android:name=".activities.ShowDetailActivity"/>
+
 
         <!-- Glide框架的配置文件 -->
         <meta-data

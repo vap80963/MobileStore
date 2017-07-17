@@ -1,6 +1,7 @@
 package com.tin.chigua.mywebo.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Handler;
@@ -19,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -29,6 +31,7 @@ import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.sina.weibo.sdk.auth.AuthInfo;
 import com.sina.weibo.sdk.web.WeiboPageUtils;
 import com.tin.chigua.mywebo.R;
+import com.tin.chigua.mywebo.activities.ShowDetailActivity;
 import com.tin.chigua.mywebo.bean.PicUrlBean;
 import com.tin.chigua.mywebo.bean.StatusesBean;
 import com.tin.chigua.mywebo.constant.Constants;
@@ -149,7 +152,8 @@ public class CommonRclvAdapter extends RecyclerView.Adapter {
                     uid = statusesBean.idstr;
                     mblogid = statusesBean.mid;
 //                    WeiboPageUtils.getInstance(mContext,authInfo).startUserMainPage(uid,useWeb);
-                    WeiboPageUtils.getInstance(mContext,authInfo).startWeiboDetailPage(mblogid,uid,useWeb);
+//                    WeiboPageUtils.getInstance(mContext,authInfo).startWeiboDetailPage(mblogid,uid,useWeb);
+                    mContext.startActivity(new Intent(mContext, ShowDetailActivity.class));
                 }
             });
             holder.mContent.setOnClickListener(new View.OnClickListener() {
@@ -452,10 +456,13 @@ public class CommonRclvAdapter extends RecyclerView.Adapter {
 
         private LinearLayout foot_view_ll;
         private TextView foot_view_item_tv;
+        private ProgressBar foot_view_item_progressbar;
+
         public MyFooterViewHolder(View view) {
             super(view);
             foot_view_ll = (LinearLayout) view.findViewById(R.id.foot_view_ll);
             foot_view_item_tv=(TextView)view.findViewById(R.id.foot_view_item_tv);
+            foot_view_item_progressbar = (ProgressBar) view.findViewById(R.id.foot_view_item_progress);
         }
     }
 }
